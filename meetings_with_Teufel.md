@@ -5,3 +5,7 @@
 + Verify computation of eigenvalues of Hamiltonian.
 + Add small random values to entries of Hamiltonian to make it non-periodic.
 + Reduce size of rectangular matrix -- to 50 by 51 for example -- and move it along the diagonal of the original matrix.
+
+## 27/01/2026
++ Fix KDE plots boundary issue.
++ Take overlapping rectangular sections covering the whole domain, and plot their singular values on the same subplot accounting for the overcounting of observations in the overlaps.
