@@ -39,18 +39,49 @@ def is_symmetric(a, tol=1.e-10) -> bool:
     '''Check if square matrix is symmetric.'''
     return np.allclose(a, a.T, atol=tol)
 
-def extract_rectangular_section(a, m, n, shift=0):
+def _determine_indices_for_rectangular_section(k, m, n, shift=0) -> tuple[int, int, int, int]:
+    '''
+    Helper function for determining indices of parent matrix that are occupied by rectangular section.
+
+    Parameters
+    ----------
+    k : int
+        Number of rows / columns of parent matrix.
+    m : int
+        Number of rows of rectangular section.
+    n : int
+        Number of columns of rectangular section.
+    shift : int, optional
+        Location along the main diagonal from where the rectangular section will be extracted. Default is 0.
+
+    Returns
+    -------
+    tuple
+        Indices of parent matrix that are occupied by rectangular section.
+    '''
+    diag_mid_val_idx = middle_value(k)
+    m_mid_val = middle_value(m)
+    n_mid_val = middle_value(n)
+
+    left_row_idx = diag_mid_val_idx - m_mid_val + shift
+    right_row_idx = diag_mid_val_idx + m_mid_val + shift - (m % 2)
+    left_column_idx = diag_mid_val_idx - n_mid_val + shift
+    right_column_idx = diag_mid_val_idx + n_mid_val + shift - (n % 2)
+
+    return left_row_idx, right_row_idx, left_column_idx, right_column_idx
+
+def extract_rectangular_section(A, m, n, shift=0):
     '''
     Extract a rectangular section from a square matrix.
     
     Parameters
     ----------
-    a : ndarray
+    A : ndarray
         Square matrix from which the rectangular section will be extracted.
     m : int
-        Number of rows of the rectangular section.
+        Number of rows of rectangular section.
     n : int
-        Number of columns of the rectangular section.
+        Number of columns of rectangular section.
     shift : int, optional
         Location along the main diagonal from where the rectangular section will be extracted. Default is 0.
         If 0, the rectangular section will be centered around the middle value of the main diagonal of the matrix.
@@ -63,20 +94,50 @@ def extract_rectangular_section(a, m, n, shift=0):
     ndarray
         Rectangular section.
     '''
-    k = a.shape[0]  # number of rows of matrix a
-    diag_mid_val_idx = middle_value(k)
-    m_mid_val = middle_value(m)
-    n_mid_val = middle_value(n)
-
-    left_row_idx = diag_mid_val_idx - m_mid_val + shift
-    right_row_idx = diag_mid_val_idx + m_mid_val + shift - (m % 2)
-    left_column_idx = diag_mid_val_idx - n_mid_val + shift
-    right_column_idx = diag_mid_val_idx + n_mid_val + shift - (n % 2)
+    k = A.shape[0]  # number of rows / columns of matrix A
+    left_row_idx, right_row_idx, left_column_idx, right_column_idx = _determine_indices_for_rectangular_section(k, m, n, shift)
 
     if left_row_idx < 0 or left_column_idx < 0 or right_row_idx > k or right_column_idx > k:
         raise ValueError('The size and/or location of the rectangular section is not compatible with the matrix.')
     else:
-        return a[left_row_idx : right_row_idx, left_column_idx : right_column_idx]
+        return A[left_row_idx : right_row_idx, left_column_idx : right_column_idx]
+    
+def select_rectangular_sections(H, m, n, d) -> dict:
+    '''
+    Generate dictionary of specifications for multiple rectangular sections of size m by n.
+
+    Parameters
+    ----------
+    H : ndarray
+        Hamiltonian matrix.
+    m : int
+        Number of rows of each rectangular section.
+    n : int
+        Number of columns of each rectangular section.
+    d : int
+        Separation distance between the centers of consecutive rectangular sections.
+
+    Returns
+    -------
+    sections_specs : dict
+        Specifications for the different rectangular sections to be extracted from H.
+    '''
+    k = H.shape[0] # number of rows / columns in H
+    left_row_idx, right_row_idx, left_column_idx, right_column_idx = _determine_indices_for_rectangular_section(k, m, n)
+
+    def is_valid_shift(j_val):
+        shift = j_val * d
+        return (0 <= left_row_idx + shift and right_row_idx + shift <= k and
+                0 <= left_column_idx + shift and right_column_idx + shift <= k)
+
+    sections_specs = {}
+    for direction in [1, -1]:
+        j = 0 if direction == 1 else -1
+        while is_valid_shift(j):
+            sections_specs[f'section {j}'] = {'m': m, 'n': n, 'shift': j * d}
+            j += direction
+
+    return sections_specs
     
 def make_hamiltonian(length, perturb_H=False) -> np.ndarray:
     '''
@@ -110,7 +171,7 @@ def make_hamiltonian(length, perturb_H=False) -> np.ndarray:
     if perturb_H:
         rng = np.random.default_rng()
         # perturbs the main diagonal
-        H = H + np.diag(rng.uniform(low=-0.25, high=0.25, size=n - 1))
+        H = H + np.diag(rng.uniform(low=-0.1, high=0.1, size=n - 1))
         # perturbs the diagonals right above and below the main one 
         H = H + np.diag(rng.uniform(low=-0.1, high=0.1, size=n - 2), k=1) + np.diag(rng.uniform(low=-0.1, high=0.1, size=n - 2), k=-1)
         # perturbs the upper right corner and the lower left corner
@@ -169,13 +230,36 @@ def compute_eigenvalues_and_singular_values(H, sections_specs={}) -> tuple[np.nd
 
     return H_eigenvalues, H_sections
 
+def _mirror_array(arr) -> tuple[np.ndarray, tuple]:
+    '''
+    Extend array by mirroring it across its boundaries.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        One-dimensional array of floats.
+
+    Returns
+    -------
+    ndarray
+        Extended array.
+    tuple
+        Left and right boundaries of original array.
+    '''
+    lb = arr.min()
+    rb = arr.max()
+    left_mirrored_arr = 2 * lb - arr
+    right_mirrored_arr = 2 * rb - arr
+    return np.append(left_mirrored_arr, np.append(arr, right_mirrored_arr)), (lb, rb)
+
 def _create_figure(hist_data, fname):
     '''Create figure and set of subplots.'''
     n_subplots = 1
     height_ratios = None
     if any(key.startswith('Singular') for key in hist_data):
         n_subplots = 2
-        height_ratios = [8, 2]
+        # height_ratios = (8, 2)
+        height_ratios = (1, 1)
 
     fig, axs = plt.subplots(
         nrows=n_subplots, 
@@ -188,7 +272,8 @@ def _create_figure(hist_data, fname):
     
     palette = sns.color_palette('colorblind', as_cmap=True)
 
-    color_idx = 0
+    # color_idx = 0
+    sv_array = np.array([], dtype=np.float64)
     for k, v in hist_data.items():
         if k.startswith('Eigenvalues'):
             # sns.histplot(
@@ -199,35 +284,42 @@ def _create_figure(hist_data, fname):
             #     )
 
             # Mirror data points near boundaries, calculate KDE and then ignore reflected part in order to fix Boundary Bias.
-            left_boundary = 0
-            right_boundary = 2
-            right_reflected_v = 2 * right_boundary - v
-            left_reflected_v = 2 * left_boundary - v
-            reflected_v = np.append(left_reflected_v, np.append(v, right_reflected_v))
+            reflected_eig, boundaries_eig = _mirror_array(v)
 
             sns.kdeplot(
-                x=reflected_v,
+                x=reflected_eig,
                 ax=axs[0],
                 color=palette[0],
                 fill=True,
-                clip=(0, 2) # Do not evaluate the density outside of these limits.
+                clip=boundaries_eig # Do not evaluate the density outside of these limits.
             )
             
             axs[0].set_title(k)
 
         else: # Singular values
-            sns.rugplot(
-                x=v,
-                ax=axs[1],
-                color=palette[color_idx],
-                height=0.75
-            )
+            # sns.rugplot(
+            #     x=v,
+            #     ax=axs[1],
+            #     color=palette[color_idx],
+            #     height=0.75
+            # )
 
-            color_idx += 1
+            # color_idx += 1
+            sv_array = np.append(sv_array, v)
+
+    reflected_sv, boundaries_sv = _mirror_array(sv_array)
+
+    sns.kdeplot(
+            x=reflected_sv,
+            ax=axs[1],
+            color=palette[1],
+            fill=True,
+            clip=boundaries_sv # Do not evaluate the density outside of these limits.
+        )    
     
     if n_subplots == 2:
         axs[1].set_title('Singular values')
-        axs[1].set_yticks([])
+        # axs[1].set_yticks([])
 
     fig.tight_layout()
     
@@ -269,15 +361,18 @@ def free_hamiltonian():
     '''
     Compute the spectrum of the Hamiltonian of the one-dimensional time-independent free Schroedinger equation with periodic boundary conditions.
     '''
-    L = 500
-    perturb_H = False
+    L = 5000
+    perturb_H = True
 
     H = make_hamiltonian(length=L, perturb_H=perturb_H)
 
-    sections_specs = {
-        # 'first section': dict(m=13, n=11, shift=0),
-        # 'second section': dict(m=13, n=11, shift=30)
-    }
+    # sections_specs = {
+    #     # 'first section': dict(m=13, n=11, shift=0),
+    #     # 'second section': dict(m=13, n=11, shift=30)
+    # }
+
+    sections_specs = select_rectangular_sections(H, m=52, n=50, d=5)
+
     H_eigenvalues, H_sections = compute_eigenvalues_and_singular_values(H, sections_specs)
 
     generate_plot(L, perturb_H, H_eigenvalues, H_sections)
