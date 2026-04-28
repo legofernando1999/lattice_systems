@@ -139,22 +139,24 @@ def select_rectangular_sections(H, m, n, d) -> dict:
 
     return sections_specs
     
-def make_hamiltonian(length, perturb_H=False) -> np.ndarray:
+def make_free_hamiltonian(length, perturb_H=False, random_rng=(-0.1, 0.1)) -> np.ndarray:
     '''
-    Construct Hamiltonian matrix.
+    Construct free Hamiltonian matrix.
     
     Parameters
     ----------
     length : int
         Space length.
     perturb_H : bool, optional
-        Whether to perturb Hamiltonian.
-        If True, small random values are added to / subtracted from the nonzero entries of the matrix. Default is False.
+        Whether to perturb the Hamiltonian.
+        If True, random values are added to / subtracted from the nonzero entries of the matrix. Default is False.
+    random_rng : tuple[float, float], optional
+        Minimum and maximum values for range of random values used in the perturbation of H. Default is (-0.1, 0.1).
 
     Returns
     -------
     H : ndarray
-        Hamiltonian matrix
+        (Perturbed) Free Hamiltonian matrix
     '''
     n = length + 1
     dx = length / (n - 1) # we want unit spacing between the particles (nodes in the mesh)
@@ -171,12 +173,12 @@ def make_hamiltonian(length, perturb_H=False) -> np.ndarray:
     if perturb_H:
         rng = np.random.default_rng()
         # perturbs the main diagonal
-        H = H + np.diag(rng.uniform(low=-0.1, high=0.1, size=n - 1))
+        H = H + np.diag(rng.uniform(low=random_rng[0], high=random_rng[1], size=n - 1))
         # perturbs the diagonals right above and below the main one 
-        H = H + np.diag(rng.uniform(low=-0.1, high=0.1, size=n - 2), k=1) + np.diag(rng.uniform(low=-0.1, high=0.1, size=n - 2), k=-1)
+        H = H + np.diag(rng.uniform(low=random_rng[0], high=random_rng[1], size=n - 2), k=1) + np.diag(rng.uniform(low=random_rng[0], high=random_rng[1], size=n - 2), k=-1)
         # perturbs the upper right corner and the lower left corner
-        H[0, -1] = H[0, -1] + rng.uniform(low=-0.1, high=0.1)
-        H[-1, 0] = H[-1, 0] + rng.uniform(low=-0.1, high=0.1)
+        H[0, -1] = H[0, -1] + rng.uniform(low=random_rng[0], high=random_rng[1])
+        H[-1, 0] = H[-1, 0] + rng.uniform(low=random_rng[0], high=random_rng[1])
     
     # H = H + np.diag(np.arange(n - 1))
     # print(H)
@@ -328,7 +330,7 @@ def _create_figure(hist_data, fname):
         dpi=800
         )
 
-def generate_plot(length, H_perturbed, H_eigenvalues, H_sections):
+def generate_plot(length, H_perturbed, H_eigenvalues, H_sections, dir_name):
     '''
     Prepare plotting data and create figure.
 
@@ -342,29 +344,35 @@ def generate_plot(length, H_perturbed, H_eigenvalues, H_sections):
         Eingenvalues of H.
     H_sections : dict
         Rectangular sections of H together with their singular values.
+    dir_name : str
+        Name of directory where plot will be saved.
     '''
+    FIG_DIR = PLOTS_DIR / dir_name
+    FIG_DIR.mkdir(exist_ok=True)
+
     if H_perturbed:
         eigenvalues_plot_title = 'Eigenvalues perturbed Hamiltonian'
-        fname = f'{PLOTS_DIR}/hist_perturbed_L={length}.png'
+        fname = f'{FIG_DIR}/kde_perturbed_L={length}.png'
     else: 
         eigenvalues_plot_title = 'Eigenvalues nonperturbed Hamiltonian'
-        fname = f'{PLOTS_DIR}/hist_nonperturbed_L={length}.png'
+        fname = f'{FIG_DIR}/kde_nonperturbed_L={length}.png'
 
-    hist_data = {eigenvalues_plot_title: H_eigenvalues}
+    fig_data = {eigenvalues_plot_title: H_eigenvalues}
 
     for k, v in H_sections.items():
-        hist_data[f'Singular values {k}'] = v['sv']
+        fig_data[f'Singular values {k}'] = v['sv']
     
-    _create_figure(hist_data, fname)
+    _create_figure(fig_data, fname)
 
 def free_hamiltonian():
     '''
     Compute the spectrum of the Hamiltonian of the one-dimensional time-independent free Schroedinger equation with periodic boundary conditions.
     '''
-    L = 5000
-    perturb_H = True
+    L = 100
+    perturb_H = False
+    dir_name = 'free_Hamiltonian'
 
-    H = make_hamiltonian(length=L, perturb_H=perturb_H)
+    H = make_free_hamiltonian(length=L, perturb_H=perturb_H, random_rng=(-0.1, 0.1))
 
     # sections_specs = {
     #     # 'first section': dict(m=13, n=11, shift=0),
@@ -375,8 +383,32 @@ def free_hamiltonian():
 
     H_eigenvalues, H_sections = compute_eigenvalues_and_singular_values(H, sections_specs)
 
-    generate_plot(L, perturb_H, H_eigenvalues, H_sections)
+    generate_plot(L, perturb_H, H_eigenvalues, H_sections, dir_name)
+
+def free_hamiltonian_lambda():
+    '''
+    Compute the spectrum of (H - lambda), where H is the Hamiltonian of the one-dimensional time-independent free Schroedinger equation with periodic boundary conditions
+    and lambda is any real number. 
+    '''
+    L = 5000
+    perturb_H = False
+    dir_name='H_lambda'
+
+    H = make_free_hamiltonian(length=L, perturb_H=perturb_H, random_rng=(-0.2, 0.2))
+    lmbd = 0.5  # λ
+    H_lambda = H - lmbd * np.identity(n=H.shape[0])  # H - λ
+
+    sections_specs = {
+        '0': dict(m=52, n=50, shift=0)
+    }
+
+    # sections_specs = select_rectangular_sections(H_lambda, m=52, n=50, d=38)
+
+    H_lambda_eigenvalues, H_lambda_sections = compute_eigenvalues_and_singular_values(H_lambda, sections_specs)
+
+    generate_plot(L, perturb_H, H_lambda_eigenvalues, H_lambda_sections, dir_name)
 
 if __name__ == '__main__':
-    free_hamiltonian()
+    # free_hamiltonian()
+    free_hamiltonian_lambda()
     print(f'{__file__} complete!')
