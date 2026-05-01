@@ -186,7 +186,7 @@ def make_free_hamiltonian(length, perturb_H=False, random_rng=(-0.1, 0.1)) -> np
     
     return H
 
-def compute_eigenvalues_and_singular_values(H, sections_specs={}) -> tuple[np.ndarray, dict]:
+def compute_eigenvalues_and_singular_values(H, sections_specs={}) -> tuple[np.ndarray, np.ndarray, dict]:
     '''
     Compute eigenvalues and singular values of H and rectangular sections extracted from it, respectively.
 
@@ -200,20 +200,22 @@ def compute_eigenvalues_and_singular_values(H, sections_specs={}) -> tuple[np.nd
     Returns
     -------
     H_eigenvalues : ndarray
-        Eigenvalues of H.
+        Eigenvalues of H, each repeated according to its multiplicity.
+    H_eigenvectors : ndarray
+        Eigenvectors of H. The normalized eigenvector corresponding to the eigenvalue w[i] is the column v[:,i].
     H_sections : dict
         Rectangular sections of H together with their singular values.
     '''
     if is_symmetric(H):
         try:
             # uses a more efficient algorithm for symmetric matrices
-            H_eigenvalues = la.eigvalsh(H, check_finite=False)
+            H_eigenvalues, H_eigenvectors = la.eigh(H, eigvals_only=False, check_finite=False)
         except la.LinAlgError:
             print('Eigenvalue computation did not converge.')
     else:
         try:
             # uses a general algorithm
-            H_eigenvalues = la.eigvals(H, check_finite=False)
+            H_eigenvalues, H_eigenvectors = la.eig(H, right=True, check_finite=False)
         except la.LinAlgError:
             print('Eigenvalue computation did not converge.')
 
@@ -226,11 +228,22 @@ def compute_eigenvalues_and_singular_values(H, sections_specs={}) -> tuple[np.nd
         # Singular Value Decomposition: A = U * S * VT (A is any m by n matrix), where the columns of U (m by m) are eigenvectors of A * AT
         # and the columns of V (n by n) are eigenvectors of AT * A. And S is diagonal (but rectangular, m by n). 
         # The r singular values on the diagonal of S are the square roots of the nonzero eigenvalues of both A * AT and AT * A.
-        s = la.svd(section, compute_uv=False, check_finite=False)
+        U, s, Vh = la.svd(section, compute_uv=True, check_finite=False)
 
-        H_sections[k] = {'matrix': section, 'sv': s}
+        H_sections[k] = {'matrix': section, 'U': U, 'sv': s, 'V': Vh.T}
 
-    return H_eigenvalues, H_sections
+    return H_eigenvalues, H_eigenvectors, H_sections
+
+def dist_lambda_spec_H(lmbd, H_eigenvalues):
+    '''
+    Calculate d(λ, Spec(H)).
+
+    Returns
+    -------
+    ndarray
+        Distances between λ and Spec(H). Sorted in increasing order.
+    '''
+    return np.sort(np.abs(lmbd - H_eigenvalues), kind='stable')
 
 def _mirror_array(arr) -> tuple[np.ndarray, tuple]:
     '''
@@ -330,7 +343,7 @@ def _create_figure(hist_data, fname):
         dpi=800
         )
 
-def generate_plot(length, H_perturbed, H_eigenvalues, H_sections, dir_name):
+def generate_plot(length, H_perturbed, H_eigenvalues, H_sections, plots_subfolder):
     '''
     Prepare plotting data and create figure.
 
@@ -344,10 +357,10 @@ def generate_plot(length, H_perturbed, H_eigenvalues, H_sections, dir_name):
         Eingenvalues of H.
     H_sections : dict
         Rectangular sections of H together with their singular values.
-    dir_name : str
+    plots_subfolder : str
         Name of directory where plot will be saved.
     '''
-    FIG_DIR = PLOTS_DIR / dir_name
+    FIG_DIR = PLOTS_DIR / plots_subfolder
     FIG_DIR.mkdir(exist_ok=True)
 
     if H_perturbed:
@@ -370,7 +383,7 @@ def free_hamiltonian():
     '''
     L = 100
     perturb_H = False
-    dir_name = 'free_Hamiltonian'
+    plots_subfolder = 'free_Hamiltonian'
 
     H = make_free_hamiltonian(length=L, perturb_H=perturb_H, random_rng=(-0.1, 0.1))
 
@@ -381,34 +394,96 @@ def free_hamiltonian():
 
     sections_specs = select_rectangular_sections(H, m=52, n=50, d=5)
 
-    H_eigenvalues, H_sections = compute_eigenvalues_and_singular_values(H, sections_specs)
+    H_eigenvalues, H_eigenvectors, H_sections = compute_eigenvalues_and_singular_values(H, sections_specs)
 
-    generate_plot(L, perturb_H, H_eigenvalues, H_sections, dir_name)
+    generate_plot(L, perturb_H, H_eigenvalues, H_sections, plots_subfolder)
 
 def free_hamiltonian_lambda():
     '''
-    Compute the spectrum of (H - lambda), where H is the Hamiltonian of the one-dimensional time-independent free Schroedinger equation with periodic boundary conditions
-    and lambda is any real number. 
+    Compute the spectrum of (H - λ), where H is the Hamiltonian of the one-dimensional time-independent free Schroedinger equation with periodic boundary conditions
+    and λ is any real number. 
     '''
-    L = 5000
+    L = 1000
     perturb_H = False
-    dir_name='H_lambda'
+    plots_subfolder='H_lambda'
 
     H = make_free_hamiltonian(length=L, perturb_H=perturb_H, random_rng=(-0.2, 0.2))
-    lmbd = 0.5  # λ
+
+    lmbd = 2.5  # λ
     H_lambda = H - lmbd * np.identity(n=H.shape[0])  # H - λ
 
+    n = 50  # in Hege's notation: 2 * L
+    m = n + 2  # in Hege's notation: 2 * (L + m). 
+    # I'm assuming that the range of my operator is m = 1, i.e. H_xy = 0 for d(x,y) > m. Is this a good assumption?
     sections_specs = {
-        '0': dict(m=52, n=50, shift=0)
+        '0': dict(m=m, n=n, shift=0)
     }
 
     # sections_specs = select_rectangular_sections(H_lambda, m=52, n=50, d=38)
 
-    H_lambda_eigenvalues, H_lambda_sections = compute_eigenvalues_and_singular_values(H_lambda, sections_specs)
+    H_eigenvalues, H_eigenvectors, H_sections = compute_eigenvalues_and_singular_values(H)
 
-    generate_plot(L, perturb_H, H_lambda_eigenvalues, H_lambda_sections, dir_name)
+    H_lambda_eigenvalues, H_lambda_eigenvectors, H_lambda_sections = compute_eigenvalues_and_singular_values(H_lambda, sections_specs)
+
+    dist = dist_lambda_spec_H(lmbd, H_eigenvalues)
+    print('d(λ, Spec(H))')
+    for i in range(5):
+        print(f'd{i + 1}: {dist[i]}')
+
+    print()
+
+    s = np.sort(H_lambda_sections['0']['sv'], kind='stable')
+    for i in range(5):
+        print(f's{i + 1}: {s[i]}')
+
+    # generate_plot(L, perturb_H, H_lambda_eigenvalues, H_lambda_sections, plots_subfolder)
+
+def free_hamiltonian_lambda_with_variations_of_uneven_sections():
+    '''
+    Compute the spectrum of (H - λ), where H is the Hamiltonian of the one-dimensional time-independent free Schroedinger equation with periodic boundary conditions
+    and λ is any real number. 
+    Calculate d(λ, Spec(H)) (as an array) and compare this against the singular values of various uneven sections.
+    '''
+    length = 1000  # space length
+    dx = 1.0  # step size
+    perturb_H = True
+    
+    H = make_free_hamiltonian(length=length, perturb_H=perturb_H, random_rng=(-0.2, 0.2))
+    H_eigenvalues, H_eigenvectors, _ = compute_eigenvalues_and_singular_values(H)
+    H_rows = H.shape[0]
+    H_diag_middle_idx = middle_value(H_rows)
+    I = np.identity(n=H_rows)
+
+    for n in range(50, 300, 50):  # in Hege's notation: 2 * L
+        for lambda_idx in range(1, 6):
+            # lmbd = lambda_idx * 0.5
+            lmbd = 3
+            for shift in range(-200, 250, 50):
+                m = n + 2  # in Hege's notation: 2 * (L + m). 
+                # I'm assuming that the range of my operator is m = 1, i.e. H_xy = 0 for d(x,y) > m. Is this a good assumption?
+                sections_specs = {
+                    'my section': dict(m=m, n=n, shift=shift)
+                }
+
+                H_lambda = H - lmbd * I  # H - λ
+                H_lambda_eigenvalues, H_lambda_eigenvectors, H_lambda_sections = compute_eigenvalues_and_singular_values(H_lambda, sections_specs)
+
+                dist = dist_lambda_spec_H(lmbd, H_eigenvalues)  # d(λ, Spec(H))
+                s = np.sort(H_lambda_sections['my section']['sv'], kind='stable')
+                L = 0.5 * n
+                x = (H_diag_middle_idx + shift) * dx
+                
+                print()
+                print(f'L: {L}, λ: {lmbd}, x: {x}')
+                print()
+                print(f'    d(λ, Spec(H)):              Singular values of Q_Lλx:')
+                for i in range(5):
+                    print(f'{i + 1} - {dist[i]}       {s[i]}')
+                
+                print()
 
 if __name__ == '__main__':
     # free_hamiltonian()
-    free_hamiltonian_lambda()
+    # free_hamiltonian_lambda()
+    free_hamiltonian_lambda_with_variations_of_uneven_sections()
     print(f'{__file__} complete!')
