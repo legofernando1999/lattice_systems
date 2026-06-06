@@ -226,7 +226,7 @@ Thus, the $\varepsilon$-pseudospectrum of a normal operator is simply the $\vare
 
 As described in \cite{paulhege2025}, an upper bound on $\rho_H$ can be obtained by performing a singular value decomposition (SVD) on the rectangular matrix $\left( H_{yz} \right)_{y \in B_{r + m}(x), \, z \in B_{r}(x)}$, where $x \in \mathbb{R}^n$ and $r, \, m > 0$ are fixed numbers.
 
-Recall that a singular value decomposition of a matrix $A \in \mathbb{C}^{m \times n}$ is a factorization into a product of matrices $A = U \Sigma V^*$, where $U \in \mathbb{C}^{m \times m}$ and $V \in \mathbb{C}^{n \times n}$ are unitary, and $\Sigma \in \mathbb{C}^{m \times n}$ is diagonal. The matrix $\Sigma$ contains the square roots of the nonnegative eigenvalues of both $AA^*$ and $A^*A$, and these are the \textit{singular values} of $A$ \cite{gilbertstrang}.
+Recall that a singular value decomposition of a matrix $A \in \mathbb{C}^{m \times n}$ is a factorization into a product of matrices $A = U S V^*$, where $U \in \mathbb{C}^{m \times m}$ and $V \in \mathbb{C}^{n \times n}$ are unitary, and $S \in \mathbb{C}^{m \times n}$ is diagonal. The matrix $S$ contains the square roots of the nonnegative eigenvalues of both $AA^*$ and $A^*A$, and these are the \textit{singular values} of $A$ \cite{gilbertstrang}.
 
 \textbf{Definition.} Let $H$ be a discrete operator with finite range $m > 0$, let $x \in \mathbb{R}^n$ be any point, $r > 0$ and $\lambda \in \mathbb{C}$. The \textit{uneven section} for these data is the linear operator
 \begin{gather*}
@@ -236,15 +236,27 @@ Recall that a singular value decomposition of a matrix $A \in \mathbb{C}^{m \tim
 
 Since $\mathcal{H}_{B_r(x)}$ and $\mathcal{H}_{B_{r + m}(x)}$ are finite dimensional, we can represent $Q_{r, \lambda, x}$ as a rectangular matrix.
 
-\textbf{Theorem.} Let $H$ be a discrete operator with finite range $m > 0$, let $x \in \mathbb{R}^n$ be any point, $r > 0$ and $\lambda \in \mathbb{C}$. Let
-\begin{equation}
-    \varepsilon_{r, \lambda, x} = \sigma_1 (Q_{r, \lambda, x})
-\end{equation}
-
-be the smallest singular value of $Q_{r, \lambda, x}$. Then $\lambda$ is contained in the $\varepsilon_{r, \lambda, x}$-pseudospectrum of $H$, that is,
+\textbf{Theorem.} Let $H$ be a discrete operator with finite range $m > 0$, let $x \in \mathbb{R}^n$ be any point, $r > 0$ and $\lambda \in \mathbb{C}$. Let $\varepsilon_{r, \lambda, x}$ be the smallest singular value of $Q_{r, \lambda, x}$. Then $\lambda$ is contained in the $\varepsilon_{r, \lambda, x}$-pseudospectrum of $H$, that is,
 \begin{equation}
     \rho_H (\lambda) \leq \varepsilon_{r, \lambda, x}
 \end{equation}
+
+\textit{Proof.} We can write the SVD of $Q_{r, \lambda, x}$ as
+\begin{equation*}
+    Q_{r, \lambda, x} = \sum_{i=1}^n \ket{u_i} s_i \bra{v_i}
+\end{equation*}
+
+where $(u_i)_{i=1,\dots,n}$ are the first $n$ columns of $U$, $(v_i)_{i=1,\dots,n}$ are the columns of $V$, and $(s_i)_{i=1,\dots,n}$ are the diagonal elements of $\Sigma$. We assume that the $(s_i)_{i=1,\dots,n}$ are sorted in increasing order so that $\varepsilon_{r, \lambda, x} = s_1$.
+
+Then $v_1$, considered as a vector in $\mathcal{H}$ via the canonical inclusion $\iota: \mathcal{H}_{B_r(x)} \rightarrow \mathcal{H}$, is an $\varepsilon_{r, \lambda, x}$-quasimode for $H$. This follows from
+\begin{align*}
+    \left( H - \lambda \right) v_1 &= \left( H - \lambda \right) \mathbf{1}_{B_r(x)} v_1 && &\text{(since $v_1$ is supported on $B_r(x)$)} \\
+    &= \mathbf{1}_{B_{r + m}(x)} \left( H - \lambda \right) \mathbf{1}_{B_r(x)} v_1 && &\text{(by the finite range of $H$)} \\
+    &= Q_{r, \lambda, x} v_1 \\
+    &= s_1 u_1
+\end{align*}
+
+and therefore $\Vert \left( H - \lambda \right) v_1 \Vert = s_1 \Vert u_1 \Vert = s_1$. We conclude that $\Vert \left( H - \lambda \right) v_1 \Vert \leq s_1 = \varepsilon_{r, \lambda, x}$, and thus $v_1$ is an $\varepsilon_{r, \lambda, x}$-quasimode, which implies that $\lambda \in \sigma_{\varepsilon_{r, \lambda, x}} (H)$ by definition of the spectrum.
 
 \newpage
 

@@ -15,4 +15,4 @@
 \contentsline {subsubsection}{\numberline {2.2.1}Normal Operators}{4}{subsubsection.2.2.1}%
 \contentsline {subsubsection}{\numberline {2.2.2}The Pseudospectrum}{4}{subsubsection.2.2.2}%
 \contentsline {subsection}{\numberline {2.3}The Pseudospectral Inclusion Bound}{6}{subsection.2.3}%
-\contentsline {section}{\numberline {3}Conclusion and Future Work}{7}{section.3}%
+\contentsline {section}{\numberline {3}Conclusion and Future Work}{8}{section.3}%
