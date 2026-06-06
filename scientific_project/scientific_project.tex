@@ -1,0 +1,257 @@
+\documentclass[12pt]{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Change the space inserted between paragraphs and remove indent
+\usepackage{parskip}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{physics}
+\usepackage{gensymb}
+\usepackage{mathrsfs}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+% Make quotes
+\usepackage{csquotes}
+
+% Bibliography management
+\usepackage{biblatex}
+\addbibresource{sample.bib}
+
+% Specify path to images folder. The path is relative to the current working directory
+\graphicspath{{./images/}}
+
+% \newcommand{\parameter}{s}
+\DeclareMathOperator{\spn}{span}
+
+\title{Scientific Project}
+\author{Fernando Muñoz Martínez}
+
+\begin{document}
+
+% Este código contiene el formato de la portada.
+\begin{titlepage}
+ 
+\thispagestyle{empty}
+
+    \begin{center}
+        \mbox{}\vfill
+        \Large
+        \textbf{Scientific Project} 
+	
+        \vspace{1 cm}
+        \large
+        Summer Semester 2026
+        
+        \vspace{1 cm}	
+        \large
+        Supervisor: Prof. Dr. Stefan Teufel \\
+        Mathematics Department \\
+        University of Tübingen
+
+        \vspace{1 cm}
+        \large
+        Fernando Muñoz Martínez
+    \end{center}
+
+    \vspace{10 cm}
+    \large
+        
+\end{titlepage}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+\subsection{Research Motivation}
+
+Spectral analysis has proven to be a powerful tool for solving a wide range of problems in mathematics, physics and engineering. Among its many applications, it facilitates the decoupling of problems involving vectors or functions into collections of simpler problems involving only scalars, the analysis of the phenomenon of resonance, and the characterization of the asymptotic behavior of a system \cite{pseudospectra}. Therefore, the ability to compute the spectra of linear operators is of fundamental importance.
+
+In practice, however, analytical solutions are rarely available. Even in the case of finite-dimensional operators represented by $n \times n$ matrices, the theorem of Abel and Ruffini shows that no general formula, involving only rational operations and root extractions, can exist for solving algebraic equations of degree higher than fourth \cite{theoryofeqs}. As a result, there is no general closed-form expression for the eigenvalues of arbitrary matrices, making numerical methods necessary.
+
+The situation becomes even more challenging when considering infinite-volume operators or those acting on infinite-dimensional spaces. Nevertheless, their ubiquity in applications has driven the development of multiple numerical algorithms designed to approximate the spectra for different classes of operators.
+
+Motivated by these challenges, the authors of \cite{paulhege2025} address the problem of computing the spectra for \textit{short-range finite-local-complexity infinite-volume operators}. Prior to their work, no numerical method was capable of approximating the spectra for this specific class of operators with full error control. By overcoming this limitation, their work fills an important gap in the existing literature.
+
+\subsection{Problem Statement}
+
+The broad aim of this work is to validate and contribute to the understanding of the algorithm developed in \cite{paulhege2025} in concrete situations, e.g., in the computation of spectral densities of quasicrystals. To this end, simulation tools which take advantage of extensively-tested scientific libraries such as NumPy and SciPy were developed in Python. This allowed us to fully focus on the implementation and validation of the algorithm while resting assured that everything else would work seamlessly.
+
+\newpage
+
+\section{Theoretical Framework}
+
+\subsection{Basic Definitions}
+
+\subsubsection{Metric and open balls on $\mathbb{R}^n$}
+
+In this dissertation, unless otherwise stated, we define the distance $d$ on $\mathbb{R}^n$ as the \textit{maximum distance}
+
+\begin{equation}
+    d(x, y) = d((x_1, \dots, x_n), (y_1, \dots, y_n)) := \max_{k=1, \dots, n} \vert x_k - y_k \vert
+\end{equation}
+
+for all $x, y \in \mathbb{R}^n$.
+
+We also define the set $B_r (x)$ for $r > 0$ and $x \in \mathbb{R}^n$ as the open ball using this distance, i.e. as the hypercube of side length $2r$ centered at $x$.
+
+\subsubsection{Uniformly Discrete Set}
+
+\textbf{Definition.} A subset $\Gamma \subseteq \mathbb{R}^n$ is called \textit{uniformly discrete} if there exists a constant $q > 0$, the \textit{packing radius}, such that $d(x, y) \ge q$ for all $x, y \in \Gamma$ with $x \ne y$.
+
+\subsubsection{Discrete Operator and Matrix Elements}
+
+\textbf{Definition.} A \textit{discrete operator} $H$ in dimension $n \in \mathbb{N}$ is a bounded operator on a separable Hilbert space $\mathcal{H}$, together with an orthonormal basis $(e_i)_{i \in \Gamma}$ indexed by a uniformly discrete set $\Gamma \subset \mathbb{R}^n$.
+
+We also define the \textit{matrix elements} of a discrete operator $H$ at points $x, y \in \Gamma$ as $H_{xy} = \langle e_x, H e_y \rangle$.
+
+We shall always represent discrete operators with respect to the special basis $(e_i)_{i \in \Gamma}$ and identify $\mathcal{H}$ with $\ell^2 (\Gamma)$ through the basis isomorphism.
+
+\subsubsection{Finite-Dimensional Subspaces and Orthogonal Projections}
+
+For any $x \in \mathbb{R}^n$ and $r > 0$, the finite-dimensional subspace $\mathcal{H}_{B_r(x)} \subset \mathcal{H}$ is defined by $\mathcal{H}_{B_r(x)} := \spn \{ e_y \vert y \in B_r(x) \cap \Gamma \}$, and the orthogonal projection onto $\mathcal{H}_{B_r(x)}$ is denoted by $\mathbf{1}_{B_r(x)}$.
+
+\subsubsection{Short- and Finite-Range Operators}
+
+\textbf{Definition.} Let $H$ be a discrete operator in dimension $n$. Then $H$ is called \textit{short-range} if there exists $C$ and $\varepsilon > 0$ such that
+
+\begin{equation}
+    \vert H_{xy} \vert \leq C d(x, y)^{-(n + \varepsilon)}
+\end{equation}
+
+for all $x, y \in \Gamma$.
+
+\textbf{Definition.} A discrete operator $H$ is said to have \textit{finite range} if there exists a constant $m > 0$ (the maximal hopping length) such that $H_{xy} = 0$ whenever $d(x, y) > m$.
+
+\subsubsection{Equivalent Action and Finite Local Complexity}
+
+\textbf{Definition.} A discrete operator $H$ is said to have an \textit{equivalent action} on two subsets $A, B \subseteq \Gamma$ if there is $t \in \mathbb{R}^n$ such that $B = A + t$ and if there exists a $U: A \rightarrow S^1 \subset \mathbb{C}$, $z \mapsto U(z)$ such that for any $a_1, a_2 \in A$ we have
+
+\begin{equation}
+    H_{b_1 b_2} = U(a_1) H_{a_1 a_2} U(a_2)^*
+\end{equation}
+
+where $b_1 = a_1 + t, \ b_2 = a_2 + t$.
+
+\textbf{Remark.} Note that for any operator $H$, the equivalent action of $H$ defines an equivalent relation on subsets of $\Gamma$.
+
+\textbf{Definition.} A discrete operator $H$ is said to have \textit{finite local complexity} (FLC) if for any $r > 0$, the set $\{ \Gamma \cap B_r(x) \vert x \in \mathbb{R}^n \}$ can be partitioned into finitely many equivalence classes with respect to the equivalent action of $H$.
+
+\subsubsection{Hausdorff Distance}
+
+\textbf{Definition.} Let $(X, d)$ be a metric space, and $\mathscr{F}(X)$ the set of all nonempty bounded closed sets in X. For  $\left( A, B \right) \in \mathscr{F}(X) \times \mathscr{F}(X)$, the \textit{Hausdorff distance} between $A$ and $B$ is defined as \cite{topology}
+
+\begin{equation}
+    d_H (A, B) := \max \left\{ \sup_{a \in A} d(a, B), \, \sup_{b \in B} d(A, b) \right\}
+\end{equation}
+
+where $d(x_0, E) := \inf_{e \in E} d(x_0, e)$ is the distance of a point $x_0 \in X$ to a nonempty subset $E \subseteq X$.
+
+%\begin{figure}[h]
+%    \centering
+%    \includegraphics[scale=0.15]{Hausdorff_distance_sample.png}
+%    \caption{Components of the calculation of the Hausdorff distance between two curves $X$ and $Y$}
+%    \label{fig:Hausdorff_distance}
+%\end{figure}
+
+\subsection{The Spectral and Pseudospectral Problems}
+
+Next, we give some additional definitions relevant to the discussion of error bounds on the approximant spectra.
+
+\subsubsection{Normal Operators}
+
+\textbf{Definition.} Let $A$ be a linear operator on an inner product space $V$. Then $A$ is \textit{normal} if and only if $AA^* = A^*A$.
+
+\textbf{Remark.} All self-adjoint and all isometric linear operators are normal. One important property of normal operators is that eigenvectors belonging to distinct eigenvalues are orthogonal, that is, for a normal operator $A$, let $Av_1 = \lambda_1 v_1$ and $Av_2 = \lambda_2 v_2$, then $\langle v_1, v_2 \rangle = 0$ whenever $\lambda_1 \neq \lambda_2$ \cite{mathsofphys}.
+
+\subsubsection{The Pseudospectrum}
+
+From mechanical oscillations to oscillations in quantum mechanics, most of the familiar applications of spectrum analysis involve matrices or operators that are normal or close to normal. Yet this familiarity can be deceiving: for nonnormal matrices or operators, the spectrum alone may tell us surprisingly little. By way of example, if a system is modeled by a linear normal operator, then the resonant amplification experienced by it in response to a sinusoidally varying driving force with frequency $\omega$ will be inversely proportional to the distance in the complex plane between $\omega$ and the nearest eigenvalue. However, for a nonnormal system, the resonant amplification may be orders of magnitude greater. The resonances are simply not determined by the eigenvalues alone \cite{pseudospectra}. It is precisely this inadequacy that motivates the pseudospectrum.
+
+\textbf{Definition.} Let $H$ be a linear operator with spectrum $\sigma(H)$, then the map $\rho_H: \mathbb{C} \rightarrow \mathbb{R}_+$ defined as
+
+\begin{align}
+    \rho_H (z) := \begin{cases}
+        \Vert (H - z)^{-1} \Vert^{-1} & \text{for} \, z \notin \sigma(H) \\
+        0 & \text{otherwise.}
+    \end{cases} 
+\end{align}
+
+is called the \textit{lower norm function}.
+
+\textbf{Definition.} Let $H$ be a linear operator, then the $\varepsilon$-pseudospectrum is defined as
+
+\begin{equation}
+    \sigma_{\varepsilon} (H) := \{ z \in \mathbb{C} \, \vert \, \rho_H (z) \leq \varepsilon \} 
+\end{equation}
+
+\textbf{Proposition.} Let $H$ be a linear operator with spectrum $\sigma(H)$, then
+\begin{equation}
+    \rho_H (z) \leq d(z, \sigma(H))
+\end{equation}
+
+with normality of $H$ being sufficient for equality.
+
+Thus, the $\varepsilon$-pseudospectrum of a normal operator is simply the $\varepsilon$-fattening of its spectrum.
+
+\textbf{Remark.} Pseudospectral analysis offers a more informative object for studying the behavior of operators for which the spectrum alone is insufficient. In particular, it shifts the focus from exact eigenvalues to $\varepsilon$-approximate ones, which, as H. J. Landau observed \cite{landau}, carry over smoothly from the normal case:
+\begin{displayquote}
+    The distinction between them arises, and plays a crucial role, in passing to non-Hermitian equations where, as we have seen, true eigenvalues do not in general describe the operator adequately; on the other hand ... systems of mutually orthogonal $\varepsilon$-approximate eigenfunctions are easily constructed, and the behavior of $\varepsilon$-approximate eigenvalues, as well as their role in explaining the action of the operator, carry over smoothly from the Hermitian case.
+\end{displayquote}
+
+\textbf{Theorem.} Let $H$ be a closed operator on a complex Banach space, then the pseudospectra $\{ \sigma_{\varepsilon} (H) \}_{\varepsilon > 0}$ have the following properties \cite{pseudospectra}.
+\begin{itemize}
+    \item Each $\sigma_{\varepsilon} (H)$ is a nonempty open subset of $\mathbb{C}$, and any bounded connected component of $\sigma_{\varepsilon} (H)$ intersects the spectrum $\sigma(H)$.
+    \item The pseudospectra are strictly nested supersets of the spectrum: $\bigcap_{\varepsilon > 0} \sigma_{\varepsilon} (H) = \sigma(H)$, and conversely, for any $\delta > 0$, $\sigma_{\varepsilon + \delta} (H) \supseteq \sigma_{\varepsilon} (H) + \Delta_{\delta}$, where $\Delta_{\delta}$ is the open disk of radius $\delta$ and $+$ is the Minkowski sum.
+\end{itemize}
+
+\textbf{Remark.} As shown in \cite{paulhege2025}, as long as we are dealing with operators of finite local complexity, it is always possible to compute the spectrum for normal operators, and the pseudospectrum for nonnormal ones.
+
+\subsection{The Pseudospectral Inclusion Bound}
+
+As described in \cite{paulhege2025}, an upper bound on $\rho_H$ can be obtained by performing a singular value decomposition (SVD) on the rectangular matrix $\left( H_{yz} \right)_{y \in B_{r + m}(x), \, z \in B_{r}(x)}$, where $x \in \mathbb{R}^n$ and $r, \, m > 0$ are fixed numbers.
+
+Recall that a singular value decomposition of a matrix $A \in \mathbb{C}^{m \times n}$ is a factorization into a product of matrices $A = U \Sigma V^*$, where $U \in \mathbb{C}^{m \times m}$ and $V \in \mathbb{C}^{n \times n}$ are unitary, and $\Sigma \in \mathbb{C}^{m \times n}$ is diagonal. The matrix $\Sigma$ contains the square roots of the nonnegative eigenvalues of both $AA^*$ and $A^*A$, and these are the \textit{singular values} of $A$ \cite{gilbertstrang}.
+
+\textbf{Definition.} Let $H$ be a discrete operator with finite range $m > 0$, let $x \in \mathbb{R}^n$ be any point, $r > 0$ and $\lambda \in \mathbb{C}$. The \textit{uneven section} for these data is the linear operator
+\begin{gather*}
+    Q_{r, \lambda, x}: \mathcal{H}_{B_r(x)} \rightarrow \mathcal{H}_{B_{r + m}(x)} \\
+    Q_{r, \lambda, x} (\psi) = \mathbf{1}_{B_{r + m}(x)} \left( H - \lambda \right) \mathbf{1}_{B_r(x)} \psi
+\end{gather*}
+
+Since $\mathcal{H}_{B_r(x)}$ and $\mathcal{H}_{B_{r + m}(x)}$ are finite dimensional, we can represent $Q_{r, \lambda, x}$ as a rectangular matrix.
+
+\textbf{Theorem.} Let $H$ be a discrete operator with finite range $m > 0$, let $x \in \mathbb{R}^n$ be any point, $r > 0$ and $\lambda \in \mathbb{C}$. Let
+\begin{equation}
+    \varepsilon_{r, \lambda, x} = \sigma_1 (Q_{r, \lambda, x})
+\end{equation}
+
+be the smallest singular value of $Q_{r, \lambda, x}$. Then $\lambda$ is contained in the $\varepsilon_{r, \lambda, x}$-pseudospectrum of $H$, that is,
+\begin{equation}
+    \rho_H (\lambda) \leq \varepsilon_{r, \lambda, x}
+\end{equation}
+
+\newpage
+
+\section{Conclusion and Future Work}
+
+\newpage
+
+\printbibliography
+
+\end{document}

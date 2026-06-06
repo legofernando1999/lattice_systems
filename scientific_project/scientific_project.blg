@@ -1,0 +1,15 @@
+[0] Config.pm:328> INFO - This is Biber 2.21
+[0] Config.pm:331> INFO - Logfile is 'scientific_project.blg'
+[33] biber:342> INFO - === Sat Jun  6, 2026, 17:45:34
+[40] Biber.pm:421> INFO - Reading 'scientific_project.bcf'
+[68] Biber.pm:1002> INFO - Found 7 citekeys in bib section 0
+[76] Biber.pm:4487> INFO - Processing section 0
+[82] Biber.pm:4678> INFO - Looking for bibtex file 'sample.bib' for section 0
+[83] bibtex.pm:1713> INFO - LaTeX decoding ...
+[85] bibtex.pm:1519> INFO - Found BibTeX data source 'sample.bib'
+[115] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[115] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[115] Biber.pm:4307> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'en-US'
+[115] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
+[118] bbl.pm:676> INFO - Writing 'scientific_project.bbl' with encoding 'UTF-8'
+[119] bbl.pm:779> INFO - Output to scientific_project.bbl

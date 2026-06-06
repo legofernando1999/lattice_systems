@@ -1,0 +1,18 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Research Motivation}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Problem Statement}{2}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Theoretical Framework}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Basic Definitions}{3}{subsection.2.1}%
+\contentsline {subsubsection}{\numberline {2.1.1}Metric and open balls on $\mathbb {R}^n$}{3}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {2.1.2}Uniformly Discrete Set}{3}{subsubsection.2.1.2}%
+\contentsline {subsubsection}{\numberline {2.1.3}Discrete Operator and Matrix Elements}{3}{subsubsection.2.1.3}%
+\contentsline {subsubsection}{\numberline {2.1.4}Finite-Dimensional Subspaces and Orthogonal Projections}{3}{subsubsection.2.1.4}%
+\contentsline {subsubsection}{\numberline {2.1.5}Short- and Finite-Range Operators}{3}{subsubsection.2.1.5}%
+\contentsline {subsubsection}{\numberline {2.1.6}Equivalent Action and Finite Local Complexity}{4}{subsubsection.2.1.6}%
+\contentsline {subsubsection}{\numberline {2.1.7}Hausdorff Distance}{4}{subsubsection.2.1.7}%
+\contentsline {subsection}{\numberline {2.2}The Spectral and Pseudospectral Problems}{4}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Normal Operators}{4}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}The Pseudospectrum}{4}{subsubsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.3}The Pseudospectral Inclusion Bound}{6}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Conclusion and Future Work}{7}{section.3}%
