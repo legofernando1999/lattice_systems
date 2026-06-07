@@ -14,5 +14,8 @@
 \contentsline {subsection}{\numberline {2.2}The Spectral and Pseudospectral Problems}{4}{subsection.2.2}%
 \contentsline {subsubsection}{\numberline {2.2.1}Normal Operators}{4}{subsubsection.2.2.1}%
 \contentsline {subsubsection}{\numberline {2.2.2}The Pseudospectrum}{4}{subsubsection.2.2.2}%
-\contentsline {subsection}{\numberline {2.3}The Pseudospectral Inclusion Bound}{6}{subsection.2.3}%
-\contentsline {section}{\numberline {3}Conclusion and Future Work}{8}{section.3}%
+\contentsline {subsection}{\numberline {2.3}Approximating the (Pseudo-)Spectrum with Full Error Control}{6}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}The Pseudospectral Inclusion Bound}{6}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}The Spectral Gap Bound}{7}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.3}A General Algorithm}{7}{subsubsection.2.3.3}%
+\contentsline {section}{\numberline {3}Conclusion and Future Work}{9}{section.3}%

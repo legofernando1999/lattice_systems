@@ -157,7 +157,7 @@ where $b_1 = a_1 + t, \ b_2 = a_2 + t$.
 \textbf{Definition.} Let $(X, d)$ be a metric space, and $\mathscr{F}(X)$ the set of all nonempty bounded closed sets in X. For  $\left( A, B \right) \in \mathscr{F}(X) \times \mathscr{F}(X)$, the \textit{Hausdorff distance} between $A$ and $B$ is defined as \cite{topology}
 
 \begin{equation}
-    d_H (A, B) := \max \left\{ \sup_{a \in A} d(a, B), \, \sup_{b \in B} d(A, b) \right\}
+    d_{\text{Hausdorff}} (A, B) := \max \left\{ \sup_{a \in A} d(a, B), \, \sup_{b \in B} d(A, b) \right\}
 \end{equation}
 
 where $d(x_0, E) := \inf_{e \in E} d(x_0, e)$ is the distance of a point $x_0 \in X$ to a nonempty subset $E \subseteq X$.
@@ -194,6 +194,13 @@ From mechanical oscillations to oscillations in quantum mechanics, most of the f
 
 is called the \textit{lower norm function}.
 
+\textbf{Definition (Variational).} Let $H$ be a linear operator on a Hilbert space $\mathcal{H}$, then
+\begin{equation} \label{eq:lower_norm_function}
+    \rho_H(z) := \inf_{\substack{\psi \in \mathcal{H} \\ \Vert \psi \Vert = 1}} \Vert (H - z) \psi \Vert
+\end{equation}
+
+is the \textit{lower norm function}.
+
 \textbf{Definition.} Let $H$ be a linear operator, then the $\varepsilon$-pseudospectrum is defined as
 
 \begin{equation}
@@ -220,11 +227,13 @@ Thus, the $\varepsilon$-pseudospectrum of a normal operator is simply the $\vare
     \item The pseudospectra are strictly nested supersets of the spectrum: $\bigcap_{\varepsilon > 0} \sigma_{\varepsilon} (H) = \sigma(H)$, and conversely, for any $\delta > 0$, $\sigma_{\varepsilon + \delta} (H) \supseteq \sigma_{\varepsilon} (H) + \Delta_{\delta}$, where $\Delta_{\delta}$ is the open disk of radius $\delta$ and $+$ is the Minkowski sum.
 \end{itemize}
 
-\textbf{Remark.} As shown in \cite{paulhege2025}, as long as we are dealing with operators of finite local complexity, it is always possible to compute the spectrum for normal operators, and the pseudospectrum for nonnormal ones.
+\subsection{Approximating the (Pseudo-)Spectrum with Full Error Control}
 
-\subsection{The Pseudospectral Inclusion Bound}
+As shown in \cite{paulhege2025}, as long as we are dealing with operators of finite local complexity, it is always possible to compute the spectrum in the normal case, and the pseudospectrum in the nonnormal one. In this section we provide the theorems that led to these results.
 
-As described in \cite{paulhege2025}, an upper bound on $\rho_H$ can be obtained by performing a singular value decomposition (SVD) on the rectangular matrix $\left( H_{yz} \right)_{y \in B_{r + m}(x), \, z \in B_{r}(x)}$, where $x \in \mathbb{R}^n$ and $r, \, m > 0$ are fixed numbers.
+\subsubsection{The Pseudospectral Inclusion Bound}
+
+An upper bound on $\rho_H$ can be obtained by performing a singular value decomposition (SVD) on the rectangular matrix $\left( H_{yz} \right)_{y \in B_{r + m}(x), \, z \in B_{r}(x)}$, where $x \in \mathbb{R}^n$ and $r, \, m > 0$ are fixed numbers.
 
 Recall that a singular value decomposition of a matrix $A \in \mathbb{C}^{m \times n}$ is a factorization into a product of matrices $A = U S V^*$, where $U \in \mathbb{C}^{m \times m}$ and $V \in \mathbb{C}^{n \times n}$ are unitary, and $S \in \mathbb{C}^{m \times n}$ is diagonal. The matrix $S$ contains the square roots of the nonnegative eigenvalues of both $AA^*$ and $A^*A$, and these are the \textit{singular values} of $A$ \cite{gilbertstrang}.
 
@@ -237,7 +246,7 @@ Recall that a singular value decomposition of a matrix $A \in \mathbb{C}^{m \tim
 Since $\mathcal{H}_{B_r(x)}$ and $\mathcal{H}_{B_{r + m}(x)}$ are finite dimensional, we can represent $Q_{r, \lambda, x}$ as a rectangular matrix.
 
 \textbf{Theorem.} Let $H$ be a discrete operator with finite range $m > 0$, let $x \in \mathbb{R}^n$ be any point, $r > 0$ and $\lambda \in \mathbb{C}$. Let $\varepsilon_{r, \lambda, x}$ be the smallest singular value of $Q_{r, \lambda, x}$. Then $\lambda$ is contained in the $\varepsilon_{r, \lambda, x}$-pseudospectrum of $H$, that is,
-\begin{equation}
+\begin{equation} \label{eq:upper_bound}
     \rho_H (\lambda) \leq \varepsilon_{r, \lambda, x}
 \end{equation}
 
@@ -256,7 +265,46 @@ Then $v_1$, considered as a vector in $\mathcal{H}$ via the canonical inclusion 
     &= s_1 u_1
 \end{align*}
 
-and therefore $\Vert \left( H - \lambda \right) v_1 \Vert = s_1 \Vert u_1 \Vert = s_1$. We conclude that $\Vert \left( H - \lambda \right) v_1 \Vert \leq s_1 = \varepsilon_{r, \lambda, x}$, and thus $v_1$ is an $\varepsilon_{r, \lambda, x}$-quasimode, which implies that $\lambda \in \sigma_{\varepsilon_{r, \lambda, x}} (H)$ by definition of the spectrum.
+and therefore $\Vert \left( H - \lambda \right) v_1 \Vert = s_1 \Vert u_1 \Vert = s_1$. We conclude that $\Vert \left( H - \lambda \right) v_1 \Vert \leq s_1 = \varepsilon_{r, \lambda, x}$ ($a = b \Rightarrow a \leq b$), and thus $v_1$ is an $\varepsilon_{r, \lambda, x}$-quasimode (by definition of a quasimode), which implies that $\lambda \in \sigma_{\varepsilon_{r, \lambda, x}} (H)$ by definition of the spectrum (eq. \ref{eq:lower_norm_function}).
+
+\subsubsection{The Spectral Gap Bound}
+
+In previous work \cite{computespectra}, it was shown that the pseudospectral inclusion bound $\varepsilon_{r, \lambda, x}$ always converges to $\rho_H (\lambda)$ as $r \rightarrow \infty$, at least for normal, finite-range operators. Nonetheless, since the convergence is not uniform in the operator $H$, it cannot be used to compute a lower bound on $\rho_H (\lambda)$.
+
+One way to circumvent this is by making use of the infimum of $\varepsilon_{r, \lambda, x}$ over all $x \in \mathbb{R}^n$. More precisely, for
+\begin{equation*}
+    \varepsilon_{r, \lambda} := \inf_{x \in \mathbb{R}^n} \varepsilon_{r, \lambda, x}
+\end{equation*}
+
+we get the following theorem.
+
+\textbf{Theorem.} Let $n \in \mathbb{N}$, let $\Gamma \subseteq \mathbb{R}^n$ be a uniformly discrete set with packing radius $q > 0$, let $H$ be a discrete operator on $\ell^2 (\Gamma)$ with finite range $m > 0$ and let $M := \sup_{x, y \in \Gamma} \vert H_{xy} \vert$. Then for every $\lambda \in \mathbb{C}$ and every $r > m$ it holds that
+\begin{equation} \label{eq:lower_bound}
+    \rho_H (\lambda) \geq \varepsilon_{r, \lambda} - \frac{C}{r}
+\end{equation}
+
+where
+\begin{equation}
+    C := m M \left( \frac{36m}{q} \right)^{n/2}
+\end{equation}
+
+For the proof of this theorem see \cite{paulhege2025}.
+
+In practice, the importance of this theorem lies in the fact that for FLC operators, the infimum $\varepsilon_{r, \lambda}$ can be computed by evaluating $\varepsilon_{r, \lambda, x}$ for a finite number of suitably chosen points $x \in \mathbb{R}^n$.
+
+\subsubsection{A General Algorithm}
+
+Finally, combining bounds \ref{eq:upper_bound} and \ref{eq:lower_bound} leads to a general algorithm for computing the (pseudo-)spectrum for FLC operators with full error control. That is, given any short-range, discrete, normal, FLC operator $H$ and $k \in \mathbb{N}$, one can derive an algorithm which computes an approximation $\Gamma_k(H) \subseteq \mathbb{C}$ such that
+\begin{equation}
+    d_{\text{Hausdorff}} \left( \sigma(H), \Gamma_k(H) \right) \leq 2^{-k}
+\end{equation}
+
+Similarly, for nonnormal operators one can derive an algorithm which computes for any $\varepsilon > 0$ and approximation $\Gamma_k(H, \varepsilon)$ such that
+\begin{equation}
+    d_{\text{Hausdorff}} \left( \sigma_{\varepsilon}(H), \Gamma_k(H, \varepsilon) \right) \leq 2^{-k}
+\end{equation}
+
+For a derivation of either of these algorithms, see \cite{paulhege2025}.
 
 \newpage
 

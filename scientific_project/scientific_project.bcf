@@ -2383,8 +2383,10 @@
     <bcf:citekey order="8" intorder="1">landau</bcf:citekey>
     <bcf:citekey order="9" intorder="1">pseudospectra</bcf:citekey>
     <bcf:citekey order="10" intorder="1">paulhege2025</bcf:citekey>
-    <bcf:citekey order="11" intorder="1">paulhege2025</bcf:citekey>
-    <bcf:citekey order="12" intorder="1">gilbertstrang</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">gilbertstrang</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">computespectra</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">paulhege2025</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">paulhege2025</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

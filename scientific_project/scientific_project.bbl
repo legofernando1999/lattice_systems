@@ -19,6 +19,48 @@
 
 \refsection{0}
   \datalist[entry]{nty/global//global/global/global}
+    \entry{computespectra}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=48be8a932c2c5ccabeb3a125b6821bf4}{%
+           family={Colbrook},
+           familyi={C\bibinitperiod},
+           given={Matthew\bibnamedelima J.},
+           giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=e6a3467adab45467bf021eb64a39f832}{%
+           family={Roman},
+           familyi={R\bibinitperiod},
+           given={Bogdan},
+           giveni={B\bibinitperiod}}}%
+        {{hash=56bb7f32c9f54cbd649b82f3d753ccb4}{%
+           family={Hansen},
+           familyi={H\bibinitperiod},
+           given={Anders\bibnamedelima C.},
+           giveni={A\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {American Physical Society}%
+      }
+      \strng{namehash}{ac81d64f0fceda821048b29fb50f088e}
+      \strng{fullhash}{ac81d64f0fceda821048b29fb50f088e}
+      \strng{fullhashraw}{ac81d64f0fceda821048b29fb50f088e}
+      \strng{bibnamehash}{ac81d64f0fceda821048b29fb50f088e}
+      \strng{authorbibnamehash}{ac81d64f0fceda821048b29fb50f088e}
+      \strng{authornamehash}{ac81d64f0fceda821048b29fb50f088e}
+      \strng{authorfullhash}{ac81d64f0fceda821048b29fb50f088e}
+      \strng{authorfullhashraw}{ac81d64f0fceda821048b29fb50f088e}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{25}
+      \field{journaltitle}{Phys. Rev. Lett.}
+      \field{title}{How to Compute Spectra with Error Control}
+      \field{volume}{122}
+      \field{year}{2019}
+      \verb{doi}
+      \verb 10.1103/PhysRevLett.122.250201
+      \endverb
+    \endentry
     \entry{topology}{book}{}{}
       \name{author}{1}{}{%
         {{hash=cde93c332d2ea2d2ffbbb38103880130}{%

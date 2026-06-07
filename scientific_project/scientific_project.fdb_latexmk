@@ -1,13 +1,13 @@
 # Fdb version 4
-["biber scientific_project"] 0 "scientific_project.bcf" "scientific_project.bbl" "scientific_project" 1780764842.01319 -1
-  "sample.bib" 1780756782.61435 1375 05475e1b05954c76899f1251d778e203 ""
-  "scientific_project.bcf" 1780764841.97177 109346 f35a0e1ec6e316e3cf2e1ba5db3c987c "pdflatex"
+["biber scientific_project"] 1780838478.88597 "scientific_project.bcf" "scientific_project.bbl" "scientific_project" 1780838917.94073 0
+  "sample.bib" 1780833367.75607 1713 e5693a98e079873dfafb2dddd84b409e ""
+  "scientific_project.bcf" 1780838917.8845 109484 4c16f46f3773140d66b7a257f741ca3e "pdflatex"
   (generated)
   "scientific_project.bbl"
   "scientific_project.blg"
   (rewritten before read)
-["pdflatex"] 1780764841.46319 "/home/fmunoz/Documents/lattice_systems/scientific_project/scientific_project.tex" "scientific_project.pdf" "scientific_project" 1780764842.01347 0
-  "/home/fmunoz/Documents/lattice_systems/scientific_project/scientific_project.tex" 1780764841.31958 15866 24199233eed6cd9396eb470a1e2b6355 ""
+["pdflatex"] 1780838916.89135 "/home/fmunoz/Documents/lattice_systems/scientific_project/scientific_project.tex" "scientific_project.pdf" "scientific_project" 1780838917.94107 0
+  "/home/fmunoz/Documents/lattice_systems/scientific_project/scientific_project.tex" 1780838916.67284 18859 c57c06acd0c78b7a3f2c73bfb566c344 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1775415801 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1775415801 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texmf-dist/fonts/tfm/jknappen/ec/tcrm1200.tfm" 1775415801 1536 74b7293ec3713bb7fdca8dd1bd1f469c ""
@@ -23,6 +23,7 @@
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmbx5.tfm" 1775415801 1332 f817c21a1ba54560425663374f1b651a ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmbx6.tfm" 1775415801 1344 8a0be4fe4d376203000810ad4dc81558 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmbx8.tfm" 1775415801 1332 1fde11373e221473104d6cc5993f046e ""
+  "/usr/share/texmf-dist/fonts/tfm/public/cm/cmcsc10.tfm" 1775415801 1300 63a6111ee6274895728663cf4b4e7e81 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmex10.tfm" 1775415801 992 662f679a0b3d2d53c1b94050fdaa3f50 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm" 1775415801 1524 4414a8315f39513458b80dfc63bff03a ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm" 1775415801 1512 f21f83efb36853c0b70002322c1ab3ad ""
@@ -35,9 +36,11 @@
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmsy6.tfm" 1775415801 1116 933a60c408fc0a863a92debe84b2d294 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm" 1775415801 1120 8b7d695260f3cff42e636090a8002094 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmti12.tfm" 1775415801 1484 ed72f8f5cf654cda15ecc8e32bfcbee5 ""
+  "/usr/share/texmf-dist/fonts/tfm/public/cm/cmtt12.tfm" 1775415801 772 9a936b7f5e2ff0557fce0f62822f0bbf ""
   "/usr/share/texmf-dist/fonts/tfm/public/rsfs/rsfs10.tfm" 1775415801 688 37338d6ab346c2f1466b29e195316aa4 ""
   "/usr/share/texmf-dist/fonts/tfm/public/rsfs/rsfs5.tfm" 1775415801 684 3a51bd4fd9600428d5264cf25f04bb9a ""
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1775415801 32080 340ef9bf63678554ee606688e7b5339d ""
+  "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb" 1775415801 32001 6aeea3afe875097b1eb0da29acd61e28 ""
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb" 1775415801 30251 6afa5cb1d0204815a708a080681d4674 ""
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb" 1775415801 36741 fa121aac0049305630cf160b86157ee4 ""
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb" 1775415801 37166 8ab3487cbe3ab49ebce74c29ea2418db ""
@@ -48,6 +51,7 @@
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1775415801 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb" 1775415801 32626 4f5c1b83753b1dd3a97d1b399a005b4b ""
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb" 1775415801 36118 fad905eba93cff5bce1e185fe980a177 ""
+  "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb" 1775415801 24252 1e4e051947e12dfb50fee0b7f4e26e3a ""
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1775415801 34694 ad62b13721ee8eda1dcc8993c8bd7041 ""
   "/usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb" 1775415801 136101 f533469f523533d38317ab5729d00c8a ""
   "/usr/share/texmf-dist/fonts/type1/public/rsfs/rsfs10.pfb" 1775415801 16077 4737ac34f0fb5608550f3780a0202c22 ""
@@ -135,12 +139,12 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1775415801 43569 fd570f2fa160877d211e859f687312ba ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1780437372 5385779 47c0c393a77fd4a098bacfd57d66b88a ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1780437364 3084555 6bd387e09e100e158f965e023f05b295 ""
-  "scientific_project.aux" 1780764841.96977 4047 ad2ce5e5efd7fe552ffb6c6af888db44 "pdflatex"
-  "scientific_project.bbl" 1780763792.01914 9076 c5a30092404ba94cba0c77e17b1c7f70 "biber scientific_project"
-  "scientific_project.out" 1780764841.97077 3430 f284637d10334545f15f2403fb023ac1 "pdflatex"
-  "scientific_project.run.xml" 1780764841.97359 2399 c912774c5a9fc5ad2ccefa1e615f8ee7 "pdflatex"
-  "scientific_project.tex" 1780764841.31958 15866 24199233eed6cd9396eb470a1e2b6355 ""
-  "scientific_project.toc" 1780764841.97359 1682 adca1a606910e13e03a222c817969189 "pdflatex"
+  "scientific_project.aux" 1780838917.8795 4946 9ce11d70970bfc15adc803ccea2f53be "pdflatex"
+  "scientific_project.bbl" 1780838479.33736 10794 fc5d7ba71b2844e4be26c193016a92f7 "biber scientific_project"
+  "scientific_project.out" 1780838917.8825 4173 299a1a08ffd2f4a6abdb97d49a774558 "pdflatex"
+  "scientific_project.run.xml" 1780838917.8862 2399 c912774c5a9fc5ad2ccefa1e615f8ee7 "pdflatex"
+  "scientific_project.tex" 1780838916.67284 18859 c57c06acd0c78b7a3f2c73bfb566c344 ""
+  "scientific_project.toc" 1780838917.8862 2010 a6a58046b4fc082111ab74f93437bfff "pdflatex"
   (generated)
   "scientific_project.aux"
   "scientific_project.bcf"
