@@ -34,6 +34,8 @@
 
 % \newcommand{\parameter}{s}
 \DeclareMathOperator{\spn}{span}
+\DeclareMathOperator{\diff}{d}
+\DeclareMathOperator{\diffx}{dx}
 
 \title{Scientific Project}
 \author{Fernando Muñoz Martínez}
@@ -305,6 +307,32 @@ Similarly, for nonnormal operators one can derive an algorithm which computes fo
 \end{equation}
 
 For a derivation of either of these algorithms, see \cite{paulhege2025}.
+
+\newpage
+
+\section{Results in Concrete Cases}
+
+\subsection{The Free Hamiltonian}
+
+As our first case, we study the discretization of the time-independent one-dimensional free Schrödinger equation with periodic boundary conditions.
+
+The finite difference method for the boundary-value problem,
+\begin{equation*}
+    H_{\text{free}} \psi(x) = -\frac{1}{2}\frac{\diff}{\diffx}\psi(x) = E \psi(x), \quad \text{for} \; 0 \leq x \leq L, \quad \text{with} \; \psi(0) = \psi(L)
+\end{equation*}
+
+requires that we select an integer $N > 0$ and divide the interval $[0, L]$ into $(N - 1)$ equal subintervals whose endpoints are the mesh points $x_i = i \Delta x$, for $i = 0, 1, 2, \dots, N - 1$, where $\Delta x = L / (N - 1)$. Using a centered-difference formula for $\psi'(x_i)$ together with the boundary conditions, we get
+
+\begin{equation}
+    H_{\text{free}} = \begin{pmatrix}
+        1 & -\frac{1}{2} & 0 & 0 & \cdots & -\frac{1}{2} \\
+        -\frac{1}{2} & 1 & -\frac{1}{2} & 0 & \cdots & 0 \\
+        0 & -\frac{1}{2} & 1 & -\frac{1}{2} & \cdots & 0 \\
+        0& 0 & -\frac{1}{2} & 1 & \cdots & 0 \\
+        \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+        -\frac{1}{2} & 0 & 0 & 0 & -\frac{1}{2} & 1
+    \end{pmatrix}
+\end{equation}
 
 \newpage
 
