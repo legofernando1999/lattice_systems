@@ -1,5 +1,10 @@
 # Meetings with Stefan Teufel
 
+## 11/06/2026
++ Plot the eigenvectors corresponding to the closest ~5 eigenvalues to lambda (use different colors), and check if the second singular value of the uneven section "contains" the eigenvalues corresponding to the eigenvectors whose support lies completely within the uneven section window.
++ Complete and submit soon the scientific project.
++ In order to test the spectral gap bound you could center an uneven section at each point x of the domain and then look at their singular values.
+
 ## 01/05/2026
 + Plot some eigenfunctions to try and see where their support is, and whether moving the uneven sections to this region gives you a singular value that is closer to the distance between your lambda and the spectrum of H.
 + Fact: Increasing randomness in the Hamiltonian makes eigenfunctions more localized.

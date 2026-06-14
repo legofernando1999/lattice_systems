@@ -361,19 +361,20 @@ def _create_figure(hist_data, fname):
             # color_idx += 1
             sv_array = np.append(sv_array, v)
 
-    reflected_sv, boundaries_sv = _mirror_array(sv_array)
+    if sv_array.size != 0: 
+        reflected_sv, boundaries_sv = _mirror_array(sv_array)
 
-    sns.kdeplot(
-            x=reflected_sv,
-            ax=axs[1],
-            color=palette[1],
-            fill=True,
-            clip=boundaries_sv # Do not evaluate the density outside of these limits.
-        )    
-    
-    if n_subplots == 2:
-        axs[1].set_title('Singular values')
-        # axs[1].set_yticks([])
+        sns.kdeplot(
+                x=reflected_sv,
+                ax=axs[1],
+                color=palette[1],
+                fill=True,
+                clip=boundaries_sv # Do not evaluate the density outside of these limits.
+            )    
+        
+        if n_subplots == 2:
+            axs[1].set_title('Singular values')
+            # axs[1].set_yticks([])
 
     fig.tight_layout()
     
@@ -422,16 +423,17 @@ def free_hamiltonian():
     '''
     length = 1000  # space length
     dx = 1.0  # step size
-    perturb_H = True
+    perturb_H = False
     plots_subfolder = 'free_Hamiltonian'
 
     H = make_free_hamiltonian(length=length, dx=dx, perturb_H=perturb_H, random_rng=(-0.1, 0.1))
 
-    sections_specs = select_rectangular_sections(H, m=52, n=50, d=5)
+    # sections_specs = select_rectangular_sections(H, m=52, n=50, d=5)
+    sections_specs = {}
 
     results = compute_eigenvalues_and_singular_values(H, sections_specs, eigvals_only=True, sing_vals_only=True)
 
-    generate_plot(length, perturb_H, results['eigenvalues'], results['sections'], plots_subfolder)
+    generate_plot(length, perturb_H, results['eigenvalues'], results.get('sections', {}), plots_subfolder)
 
 def free_hamiltonian_lambda():
     '''

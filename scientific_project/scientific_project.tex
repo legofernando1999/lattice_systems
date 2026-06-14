@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[11pt]{article}
 
 % Language setting
 % Replace `english' with e.g. `spanish' to change the document language
@@ -22,6 +22,25 @@
 \usepackage{mathrsfs}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
+% Highlight parts of matrices
+\usepackage{tikz}
+\usetikzlibrary{fit}
+\tikzset{
+  highlight/.style={rectangle, rounded corners, fill=red!15, draw, fill opacity=0.4, thick, inner xsep=4pt, inner ysep=0pt}
+}
+
+\newcommand{\tikzmark}[2]{\tikz[overlay,remember picture,
+  baseline=(#1.base)] \node (#1) {#2};}
+
+\newcommand{\Highlight}[1][submatrix]{
+    \tikz[overlay, remember picture]{
+        \node[highlight, fit=(left.north west) (right.south east)] (#1) {};
+    }
+}
+
+% Set maximum number of columns in matrices
+\setcounter{MaxMatrixCols}{12}
+
 % Make quotes
 \usepackage{csquotes}
 
@@ -32,7 +51,6 @@
 % Specify path to images folder. The path is relative to the current working directory
 \graphicspath{{./images/}}
 
-% \newcommand{\parameter}{s}
 \DeclareMathOperator{\spn}{span}
 \DeclareMathOperator{\diff}{d}
 \DeclareMathOperator{\diffx}{dx}
@@ -54,7 +72,7 @@
 	
         \vspace{1 cm}
         \large
-        Summer Semester 2026
+        Fernando Muñoz Martínez
         
         \vspace{1 cm}	
         \large
@@ -64,7 +82,7 @@
 
         \vspace{1 cm}
         \large
-        Fernando Muñoz Martínez
+        Summer Semester 2026
     \end{center}
 
     \vspace{10 cm}
@@ -92,7 +110,7 @@ Motivated by these challenges, the authors of \cite{paulhege2025} address the pr
 
 \subsection{Problem Statement}
 
-The broad aim of this work is to validate and contribute to the understanding of the algorithm developed in \cite{paulhege2025} in concrete situations, e.g., in the computation of spectral densities of quasicrystals. To this end, simulation tools which take advantage of extensively-tested scientific libraries such as NumPy and SciPy were developed in Python. This allowed us to fully focus on the implementation and validation of the algorithm while resting assured that everything else would work seamlessly.
+The broad aim of this work is to validate and contribute to the understanding of some of the results reported in \cite{paulhege2025} in concrete situations. To this end, simulation tools which take advantage of extensively-tested scientific libraries such as NumPy and SciPy were developed in Python. This allowed us to fully focus on the mathematical aspects of the problem, and on the interpretation of the results, without having to worry about the technical details of the implementation.
 
 \newpage
 
@@ -118,9 +136,11 @@ We also define the set $B_r (x)$ for $r > 0$ and $x \in \mathbb{R}^n$ as the ope
 
 \subsubsection{Discrete Operator and Matrix Elements}
 
-\textbf{Definition.} A \textit{discrete operator} $H$ in dimension $n \in \mathbb{N}$ is a bounded operator on a separable Hilbert space $\mathcal{H}$, together with an orthonormal basis $(e_i)_{i \in \Gamma}$ indexed by a uniformly discrete set $\Gamma \subset \mathbb{R}^n$.
+\textbf{Definition.} A \textit{discrete operator} $H$ in dimension $n \in \mathbb{N}$ is a bounded operator on a separable Hilbert space $\mathcal{H}$, together with an orthonormal basis $(e_i)_{i \in \Gamma}$ indexed by a uniformly discrete set $\Gamma \subset \mathbb{R}^n$. 
 
-We also define the \textit{matrix elements} of a discrete operator $H$ at points $x, y \in \Gamma$ as $H_{xy} = \langle e_x, H e_y \rangle$.
+\textbf{Remark.} The orthonormal basis $(e_i)_{i \in \Gamma}$ should be thought of as a collection of \textit{delta functions} supported on the points of $\Gamma$: each basis vector $e_x$ is localized at a single point $x \in \Gamma$, and satisfies $\langle e_x, e_y \rangle = \delta_{xy}$.
+
+We also define the \textit{matrix elements} of a discrete operator $H$ at the points $x, y \in \Gamma$ as $H_{xy} = \langle e_x, H e_y \rangle$.
 
 We shall always represent discrete operators with respect to the special basis $(e_i)_{i \in \Gamma}$ and identify $\mathcal{H}$ with $\ell^2 (\Gamma)$ through the basis isomorphism.
 
@@ -164,13 +184,6 @@ where $b_1 = a_1 + t, \ b_2 = a_2 + t$.
 
 where $d(x_0, E) := \inf_{e \in E} d(x_0, e)$ is the distance of a point $x_0 \in X$ to a nonempty subset $E \subseteq X$.
 
-%\begin{figure}[h]
-%    \centering
-%    \includegraphics[scale=0.15]{Hausdorff_distance_sample.png}
-%    \caption{Components of the calculation of the Hausdorff distance between two curves $X$ and $Y$}
-%    \label{fig:Hausdorff_distance}
-%\end{figure}
-
 \subsection{The Spectral and Pseudospectral Problems}
 
 Next, we give some additional definitions relevant to the discussion of error bounds on the approximant spectra.
@@ -179,7 +192,7 @@ Next, we give some additional definitions relevant to the discussion of error bo
 
 \textbf{Definition.} Let $A$ be a linear operator on an inner product space $V$. Then $A$ is \textit{normal} if and only if $AA^* = A^*A$.
 
-\textbf{Remark.} All self-adjoint and all isometric linear operators are normal. One important property of normal operators is that eigenvectors belonging to distinct eigenvalues are orthogonal, that is, for a normal operator $A$, let $Av_1 = \lambda_1 v_1$ and $Av_2 = \lambda_2 v_2$, then $\langle v_1, v_2 \rangle = 0$ whenever $\lambda_1 \neq \lambda_2$ \cite{mathsofphys}.
+\textbf{Remark.} All self-adjoint and all isometric linear operators are normal \cite{mathsofphys}.
 
 \subsubsection{The Pseudospectrum}
 
@@ -196,12 +209,16 @@ From mechanical oscillations to oscillations in quantum mechanics, most of the f
 
 is called the \textit{lower norm function}.
 
+Although $\rho_H$ is not a norm, it can be given a variational definition, similar to the operator norm.
+
 \textbf{Definition (Variational).} Let $H$ be a linear operator on a Hilbert space $\mathcal{H}$, then
 \begin{equation} \label{eq:lower_norm_function}
     \rho_H(z) := \inf_{\substack{\psi \in \mathcal{H} \\ \Vert \psi \Vert = 1}} \Vert (H - z) \psi \Vert
 \end{equation}
 
 is the \textit{lower norm function}.
+
+Furthermore, $\rho_H$ is Lipschitz continuous with Lipschitz constant equal to $1$.
 
 \textbf{Definition.} Let $H$ be a linear operator, then the $\varepsilon$-pseudospectrum is defined as
 
@@ -242,7 +259,7 @@ Recall that a singular value decomposition of a matrix $A \in \mathbb{C}^{m \tim
 \textbf{Definition.} Let $H$ be a discrete operator with finite range $m > 0$, let $x \in \mathbb{R}^n$ be any point, $r > 0$ and $\lambda \in \mathbb{C}$. The \textit{uneven section} for these data is the linear operator
 \begin{gather*}
     Q_{r, \lambda, x}: \mathcal{H}_{B_r(x)} \rightarrow \mathcal{H}_{B_{r + m}(x)} \\
-    Q_{r, \lambda, x} (\psi) = \mathbf{1}_{B_{r + m}(x)} \left( H - \lambda \right) \mathbf{1}_{B_r(x)} \psi
+    Q_{r, \lambda, x} (\psi) = \mathbf{1}_{B_{r + m}(x)} \left( H - \lambda \right) \psi
 \end{gather*}
 
 Since $\mathcal{H}_{B_r(x)}$ and $\mathcal{H}_{B_{r + m}(x)}$ are finite dimensional, we can represent $Q_{r, \lambda, x}$ as a rectangular matrix.
@@ -261,8 +278,7 @@ where $(u_i)_{i=1,\dots,n}$ are the first $n$ columns of $U$, $(v_i)_{i=1,\dots,
 
 Then $v_1$, considered as a vector in $\mathcal{H}$ via the canonical inclusion $\iota: \mathcal{H}_{B_r(x)} \rightarrow \mathcal{H}$, is an $\varepsilon_{r, \lambda, x}$-quasimode for $H$. This follows from
 \begin{align*}
-    \left( H - \lambda \right) v_1 &= \left( H - \lambda \right) \mathbf{1}_{B_r(x)} v_1 && &\text{(since $v_1$ is supported on $B_r(x)$)} \\
-    &= \mathbf{1}_{B_{r + m}(x)} \left( H - \lambda \right) \mathbf{1}_{B_r(x)} v_1 && &\text{(by the finite range of $H$)} \\
+    \left( H - \lambda \right) v_1 &= \mathbf{1}_{B_{r + m}(x)} \left( H - \lambda \right) v_1 && &\text{(by the finite range of $H$)} \\
     &= Q_{r, \lambda, x} v_1 \\
     &= s_1 u_1
 \end{align*}
@@ -290,13 +306,13 @@ where
     C := m M \left( \frac{36m}{q} \right)^{n/2}
 \end{equation}
 
-For the proof of this theorem see \cite{paulhege2025}.
+For a proof of this theorem see \cite{paulhege2025}.
 
 In practice, the importance of this theorem lies in the fact that for FLC operators, the infimum $\varepsilon_{r, \lambda}$ can be computed by evaluating $\varepsilon_{r, \lambda, x}$ for a finite number of suitably chosen points $x \in \mathbb{R}^n$.
 
 \subsubsection{A General Algorithm}
 
-Finally, combining bounds \ref{eq:upper_bound} and \ref{eq:lower_bound} leads to a general algorithm for computing the (pseudo-)spectrum for FLC operators with full error control. That is, given any short-range, discrete, normal, FLC operator $H$ and $k \in \mathbb{N}$, one can derive an algorithm which computes an approximation $\Gamma_k(H) \subseteq \mathbb{C}$ such that
+Finally, combining bounds \ref{eq:upper_bound} and \ref{eq:lower_bound} leads to a general algorithm for computing an approximation to the (pseudo-)spectrum for FLC operators with full error control. That is, given any short-range, discrete, normal, FLC operator $H$ and $k \in \mathbb{N}$, one can derive an algorithm which computes an approximation $\Gamma_k(H) \subseteq \mathbb{C}$ such that
 \begin{equation}
     d_{\text{Hausdorff}} \left( \sigma(H), \Gamma_k(H) \right) \leq 2^{-k}
 \end{equation}
@@ -306,7 +322,7 @@ Similarly, for nonnormal operators one can derive an algorithm which computes fo
     d_{\text{Hausdorff}} \left( \sigma_{\varepsilon}(H), \Gamma_k(H, \varepsilon) \right) \leq 2^{-k}
 \end{equation}
 
-For a derivation of either of these algorithms, see \cite{paulhege2025}.
+For a proof of either of these results, see \cite{paulhege2025}.
 
 \newpage
 
@@ -318,12 +334,19 @@ As our first case, we study the discretization of the time-independent one-dimen
 
 The finite difference method for the boundary-value problem,
 \begin{equation*}
-    H_{\text{free}} \psi(x) = -\frac{1}{2}\frac{\diff}{\diffx}\psi(x) = E \psi(x), \quad \text{for} \; 0 \leq x \leq L, \quad \text{with} \; \psi(0) = \psi(L)
+    H_{\text{free}} \psi(x) = -\frac{1}{2}\frac{\diff^2}{\diffx^2}\psi(x) = E \psi(x), \quad \text{for} \; 0 \leq x \leq L, \quad \text{with} \; \psi(0) = \psi(L)
 \end{equation*}
 
-requires that we select an integer $N > 0$ and divide the interval $[0, L]$ into $(N - 1)$ equal subintervals whose endpoints are the mesh points $x_i = i \Delta x$, for $i = 0, 1, 2, \dots, N - 1$, where $\Delta x = L / (N - 1)$. Using a centered-difference formula for $\psi'(x_i)$ together with the boundary conditions, we get
+requires that we select an integer $N > 0$ and divide the interval $[0, L]$ into $(N - 1)$ equal subintervals whose endpoints are the mesh points $x_i = i \Delta x$, for $i = 0, 1, 2, \dots, N - 1$, where $\Delta x = L / (N - 1)$. Using a centered-difference formula for $\psi''(x_i)$ together with the boundary conditions, we get the system of equations
 
-\begin{equation}
+\begin{align*}
+    -\frac{1}{2} \frac{1}{(\Delta x)^2} \left( \psi_{i+1} - 2\psi_i + \psi_{i-1} \right) &= E \psi_i, \quad \text{for} \; i = 1, 2, \dots, N - 2; \\
+    \text{and} \; \psi_0 &= \psi_{N-1}.
+\end{align*}
+
+This allows us to express the Hamiltonian, $H_{\text{free}} \in \mathcal{L} (\ell^2(\mathbb{Z}))$, in matrix form as 
+
+\begin{equation*}
     H_{\text{free}} = \begin{pmatrix}
         1 & -\frac{1}{2} & 0 & 0 & \cdots & -\frac{1}{2} \\
         -\frac{1}{2} & 1 & -\frac{1}{2} & 0 & \cdots & 0 \\
@@ -332,7 +355,42 @@ requires that we select an integer $N > 0$ and divide the interval $[0, L]$ into
         \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
         -\frac{1}{2} & 0 & 0 & 0 & -\frac{1}{2} & 1
     \end{pmatrix}
-\end{equation}
+\end{equation*}
+
+for $\Delta x = 1$.
+
+We can then plot its spectrum using a kernel density estimation (KDE). The resulting plot is shown in figure \ref{fig:free_hamiltonian}.
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[scale=0.7]{kde_nonperturbed_L=1000.png}
+   \caption{KDE plot of the spectrum of the free Hamiltonian, with $L = 1000$ and $\Delta x = 1$.}
+   \label{fig:free_hamiltonian}
+\end{figure}
+
+In order to validate the pseudospectral inclusion bound for this operator, first we need to take an uneven section. Given the simplicity of $H_{\text{free}}$, any uneven section will do. For instance, let $r = 50$, $x = L/2$ and $\lambda \in \mathbb{R}$, then 
+
+\[
+    (H_{\text{free}} - \lambda) = \begin{pmatrix}
+        1 - \lambda & -\frac{1}{2} & & & & \cdots & & & & & & -\frac{1}{2} \\
+        -\frac{1}{2} & 1 - \lambda & & & & & & & & & & \\
+        & & \ddots & & & & & & & & & \\
+        & & & 1 - \lambda & \tikzmark{left}{$-\frac{1}{2}$} & & & & & & & \\
+        & & & -\frac{1}{2} & 1 - \lambda & -\frac{1}{2} & & & & & & \\
+        \vdots & & & & -\frac{1}{2} & 1 - \lambda & -\frac{1}{2} & & & & & \vdots \\
+        & & & & & \ddots & \ddots & \ddots & & & & \\
+        & & & & & & -\frac{1}{2} & 1 - \lambda & -\frac{1}{2} & & & \\
+        & & & & & & & \tikzmark{right}{$-\frac{1}{2}$} & 1 - \lambda & & & \\
+        & & & & & & & & & & \ddots & \\
+        -\frac{1}{2} & & & & & \cdots & & & & & -\frac{1}{2} & 1 - \lambda
+    \end{pmatrix}
+    \Highlight[uneven_section]
+    \tikz[overlay,remember picture] {
+        \node[above of=uneven_section, xshift=45pt, yshift=9pt] {$Q_{r, x, \lambda}$};
+    }
+\]
+
+\subsection{The Perturbed Free Hamiltonian}
 
 \newpage
 
