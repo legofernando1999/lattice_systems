@@ -35,21 +35,58 @@ def middle_value(k):
     else:
         return int((k + 1) / 2)
     
+def extract_first_element_of_array(int_arr):
+    '''
+    Extract first element of array of integers.
+
+    Parameters
+    ----------
+    int_array : ndarray of ints
+        One-dimensional NumPy array of integers.
+
+    Returns
+    -------
+    int
+        The first element of the array.
+    '''
+    if int_arr.size > 1:
+        return int_arr[0]
+    else: # int_arr.size == 1
+        return int(int_arr)
+
+def choose_x(perturb_H, y_axis, N, r):
+    '''
+    Choose an x based on the index location of the highest value of `y_axis`.
+    '''
+    if perturb_H:
+        x = extract_first_element_of_array(np.argmax(y_axis))
+            
+        if x - r < 0:
+            while x - r < 0:
+                x = x + 1
+        elif x + r > N:
+            while x + r > N:
+                x = x - 1
+    else:
+        x = middle_value(N)
+
+    return x
+    
 def is_hermitian(a: np.ndarray, tol=1.e-10) -> bool:
     '''Determine if square matrix is Hermitian.'''
     return np.allclose(a, a.conj().T, atol=tol)
 
-def _determine_indices_for_rectangular_section(k, m, n, shift=0) -> tuple[int, int, int, int]:
+def _determine_indices_for_rectangular_section(N, nrows, ncols, shift=0) -> tuple[int, int, int, int]:
     '''
     Helper function for determining indices of parent matrix that are occupied by rectangular section.
 
     Parameters
     ----------
-    k : int
+    N : int
         Number of rows / columns of parent matrix.
-    m : int
+    nrows : int
         Number of rows of rectangular section.
-    n : int
+    ncols : int
         Number of columns of rectangular section.
     shift : int, optional
         Location along the main diagonal from where the rectangular section will be extracted. Default is 0.
@@ -59,18 +96,18 @@ def _determine_indices_for_rectangular_section(k, m, n, shift=0) -> tuple[int, i
     tuple
         Indices of parent matrix that are occupied by rectangular section.
     '''
-    diag_mid_val_idx = middle_value(k)
-    m_mid_val = middle_value(m)
-    n_mid_val = middle_value(n)
+    diag_mid_val_idx = middle_value(N)
+    nrows_mid_val = middle_value(nrows)
+    ncols_mid_val = middle_value(ncols)
 
-    left_row_idx = diag_mid_val_idx - m_mid_val + shift
-    right_row_idx = diag_mid_val_idx + m_mid_val + shift - (m % 2)
-    left_column_idx = diag_mid_val_idx - n_mid_val + shift
-    right_column_idx = diag_mid_val_idx + n_mid_val + shift - (n % 2)
+    left_row_idx = diag_mid_val_idx - nrows_mid_val + shift
+    right_row_idx = diag_mid_val_idx + nrows_mid_val + shift - (nrows % 2)
+    left_column_idx = diag_mid_val_idx - ncols_mid_val + shift
+    right_column_idx = diag_mid_val_idx + ncols_mid_val + shift - (ncols % 2)
 
     return left_row_idx, right_row_idx, left_column_idx, right_column_idx
 
-def extract_rectangular_section(A, m, n, shift=0):
+def extract_rectangular_section(A, nrows, ncols, shift=0):
     '''
     Extract a rectangular section from a square matrix.
     
@@ -78,9 +115,9 @@ def extract_rectangular_section(A, m, n, shift=0):
     ----------
     A : ndarray
         Square matrix from which the rectangular section will be extracted.
-    m : int
+    nrows : int
         Number of rows of rectangular section.
-    n : int
+    ncols : int
         Number of columns of rectangular section.
     shift : int, optional
         Location along the main diagonal from where the rectangular section will be extracted. Default is 0.
@@ -94,25 +131,25 @@ def extract_rectangular_section(A, m, n, shift=0):
     ndarray
         Rectangular section.
     '''
-    k = A.shape[0]  # number of rows / columns of matrix A
-    left_row_idx, right_row_idx, left_column_idx, right_column_idx = _determine_indices_for_rectangular_section(k, m, n, shift)
+    N = A.shape[0]  # number of rows / columns of matrix A
+    left_row_idx, right_row_idx, left_column_idx, right_column_idx = _determine_indices_for_rectangular_section(N, nrows, ncols, shift)
 
-    if left_row_idx < 0 or left_column_idx < 0 or right_row_idx > k or right_column_idx > k:
+    if left_row_idx < 0 or left_column_idx < 0 or right_row_idx > N or right_column_idx > N:
         raise ValueError('The size and/or location of the rectangular section is not compatible with the matrix.')
     else:
         return A[left_row_idx : right_row_idx, left_column_idx : right_column_idx]
     
-def select_rectangular_sections(H, m, n, d) -> dict:
+def select_rectangular_sections(H, nrows, ncols, d) -> dict:
     '''
-    Generate dictionary of specifications for multiple rectangular sections of size m by n.
+    Generate dictionary of specifications for multiple rectangular sections of size nrows by ncols.
 
     Parameters
     ----------
     H : ndarray
         Hamiltonian matrix.
-    m : int
+    nrows : int
         Number of rows of each rectangular section.
-    n : int
+    ncols : int
         Number of columns of each rectangular section.
     d : int
         Separation distance between the centers of consecutive rectangular sections.
@@ -122,30 +159,30 @@ def select_rectangular_sections(H, m, n, d) -> dict:
     sections_specs : dict
         Specifications for the different rectangular sections to be extracted from H.
     '''
-    k = H.shape[0] # number of rows / columns in H
-    left_row_idx, right_row_idx, left_column_idx, right_column_idx = _determine_indices_for_rectangular_section(k, m, n)
+    N = H.shape[0] # Number of rows / columns of H
+    left_row_idx, right_row_idx, left_column_idx, right_column_idx = _determine_indices_for_rectangular_section(N, nrows, ncols)
 
     def is_valid_shift(j_val):
         shift = j_val * d
-        return (0 <= left_row_idx + shift and right_row_idx + shift <= k and
-                0 <= left_column_idx + shift and right_column_idx + shift <= k)
+        return (0 <= left_row_idx + shift and right_row_idx + shift <= N and
+                0 <= left_column_idx + shift and right_column_idx + shift <= N)
 
     sections_specs = {}
     for direction in [1, -1]:
         j = 0 if direction == 1 else -1
         while is_valid_shift(j):
-            sections_specs[f'section {j}'] = {'m': m, 'n': n, 'shift': j * d}
+            sections_specs[f'section {j}'] = {'nrows': nrows, 'ncols': ncols, 'shift': j * d}
             j += direction
 
     return sections_specs
     
-def make_free_hamiltonian(length, dx, perturb_H=False, random_rng=(-0.1, 0.1)) -> np.ndarray:
+def make_free_hamiltonian(L, dx, perturb_H=False, random_rng=(-0.1, 0.1)) -> np.ndarray:
     '''
     Construct free Hamiltonian matrix.
     
     Parameters
     ----------
-    length : int
+    L : int
         Space length.
     dx : float
         Step size. Or spacing between particles.
@@ -160,12 +197,12 @@ def make_free_hamiltonian(length, dx, perturb_H=False, random_rng=(-0.1, 0.1)) -
     H : ndarray
         (Perturbed) Free Hamiltonian matrix
     '''
-    n = int(length / dx) + 1
-    # dx = length / (n - 1)
+    N = int(L / dx) + 1
+    # dx = L / (N - 1)
 
     # solved using finite differences with periodic boundary conditions
-    diag = -2. * np.ones(n - 1)
-    off_diag = np.ones(n - 2)
+    diag = -2. * np.ones(N)
+    off_diag = np.ones(N - 1)
     a = -0.5 / dx ** 2
 
     H = a * (np.diag(diag) + np.diag(off_diag, k=1) + np.diag(off_diag, k=-1))
@@ -177,11 +214,11 @@ def make_free_hamiltonian(length, dx, perturb_H=False, random_rng=(-0.1, 0.1)) -
         rng = np.random.default_rng()
         
         # perturbs the main diagonal
-        H = H + np.diag(rng.uniform(low=random_rng[0], high=random_rng[1], size=n - 1))
+        H = H + np.diag(rng.uniform(low=random_rng[0], high=random_rng[1], size=N))
         
         # perturbs the sub-diagonals
-        random_val_sub_diag = rng.uniform(low=random_rng[0], high=random_rng[1], size=n - 2)
-        H = H + np.diag(random_val_sub_diag, k=1) + np.diag(random_val_sub_diag, k=-1)
+        random_vals_sub_diag = rng.uniform(low=random_rng[0], high=random_rng[1], size=N - 1)
+        H = H + np.diag(random_vals_sub_diag, k=1) + np.diag(random_vals_sub_diag, k=-1)
         
         # perturbs the upper right corner and the lower left corner
         # I think I shouldn't mess with these corners as they encode the boundary condition. I'm not sure this is an issue, though.
@@ -246,7 +283,7 @@ def compute_eigenvalues_and_singular_values(H, sections_specs=None, eigvals_only
                 eigvals, eigvecs = la.eig(H, check_finite=False)
                 results['eigenvectors'] = eigvecs
 
-            # non-hermitian eigenvalues might be complex; only cast to float if purely real
+            # Non-Hermitian eigenvalues might be complex; only cast to float if purely real
             results['eigenvalues'] = np.real_if_close(eigvals)
 
     except la.LinAlgError as e:
@@ -255,7 +292,7 @@ def compute_eigenvalues_and_singular_values(H, sections_specs=None, eigvals_only
     if sections_specs:
         sections = {}
         for k, v in sections_specs.items():
-            section = extract_rectangular_section(H, m=v['m'], n=v['n'], shift=v['shift'])
+            section = extract_rectangular_section(H, nrows=v['nrows'], ncols=v['ncols'], shift=v['shift'])
 
             # Singular Value Decomposition: A = U * S * VT (A is any m by n matrix), where the columns of U (m by m) are eigenvectors of A * AT
             # and the columns of V (n by n) are eigenvectors of AT * A. And S is diagonal (but rectangular, m by n). 
@@ -273,16 +310,16 @@ def compute_eigenvalues_and_singular_values(H, sections_specs=None, eigvals_only
     return results
 
 
-def dist_lambda_spec_H(lmbd, H_eigenvalues):
+def dist_lambda_spec_H(lmbd, spectrum):
     '''
-    Calculate d(λ, Spec(H)).
+    Calculate d(λ, σ(H)).
 
     Returns
     -------
     ndarray
-        Distances between λ and Spec(H).
+        Distances between λ and the spectrum of H.
     '''
-    return np.abs(lmbd - H_eigenvalues)
+    return np.abs(lmbd - spectrum)
 
 def _mirror_array(arr) -> tuple[np.ndarray, tuple]:
     '''
@@ -383,13 +420,13 @@ def _create_figure(hist_data, fname):
         dpi=800
         )
 
-def generate_plot(length, H_perturbed, H_eigenvalues, H_sections, plots_subfolder):
+def generate_plot(L, H_perturbed, H_eigenvalues, H_sections, plots_subfolder):
     '''
     Prepare plotting data and create figure.
 
     Parameters
     ----------
-    length : int
+    L : int
         Space length.
     H_perturbed : bool
         Whether H has been perturbed.
@@ -405,10 +442,10 @@ def generate_plot(length, H_perturbed, H_eigenvalues, H_sections, plots_subfolde
 
     if H_perturbed:
         eigenvalues_plot_title = 'Eigenvalues perturbed Hamiltonian'
-        fname = f'{FIG_DIR}/kde_perturbed_L={length}.png'
+        fname = f'{FIG_DIR}/kde_perturbed_L={L}.png'
     else: 
         eigenvalues_plot_title = 'Eigenvalues nonperturbed Hamiltonian'
-        fname = f'{FIG_DIR}/kde_nonperturbed_L={length}.png'
+        fname = f'{FIG_DIR}/kde_nonperturbed_L={L}.png'
 
     fig_data = {eigenvalues_plot_title: H_eigenvalues}
 
@@ -421,78 +458,85 @@ def free_hamiltonian():
     '''
     Compute the spectrum of the Hamiltonian of the one-dimensional time-independent free Schroedinger equation with periodic boundary conditions.
     '''
-    length = 1000  # space length
+    L = 1000  # space length
     dx = 1.0  # step size
     perturb_H = False
     plots_subfolder = 'free_Hamiltonian'
 
-    H = make_free_hamiltonian(length=length, dx=dx, perturb_H=perturb_H, random_rng=(-0.1, 0.1))
+    H = make_free_hamiltonian(L=L, dx=dx, perturb_H=perturb_H, random_rng=(-0.1, 0.1))
 
-    # sections_specs = select_rectangular_sections(H, m=52, n=50, d=5)
-    sections_specs = {}
+    r = 50
+    m = 1  # maximal hopping length
+    ncols = 2 * r
+    nrows = 2 * (r + m)
+    sections_specs = select_rectangular_sections(H, nrows=nrows, ncols=ncols, d=5)
+    # sections_specs = {}
 
     results = compute_eigenvalues_and_singular_values(H, sections_specs, eigvals_only=True, sing_vals_only=True)
+    H_sections = results.get('sections', {})
 
-    generate_plot(length, perturb_H, results['eigenvalues'], results.get('sections', {}), plots_subfolder)
+    generate_plot(L, perturb_H, results['eigenvalues'], H_sections, plots_subfolder)
 
 def free_hamiltonian_lambda():
     '''
     Compute the spectrum of (H - λ), where H is the Hamiltonian of the one-dimensional time-independent free Schroedinger equation with periodic boundary conditions
     and λ is any real number. 
     '''
-    length = 500  # space length
+    L = 1000  # space length
     dx = 1.0  # step size
     perturb_H = True
-    lmbd = 0.5  # λ
+    lmbd = 2.5  # λ
     plots_subfolder='H_lambda'
 
-    H = make_free_hamiltonian(length=length, dx=dx, perturb_H=perturb_H, random_rng=(-0.2, 0.2))
+    H = make_free_hamiltonian(L=L, dx=dx, perturb_H=perturb_H, random_rng=(-0.2, 0.2))
     H_results = compute_eigenvalues_and_singular_values(H)
     H_eigenvalues, H_eigenvectors = H_results['eigenvalues'], H_results['eigenvectors']
 
-    dist = dist_lambda_spec_H(lmbd, H_eigenvalues)  # d(λ, Spec(H))
-    eig_idx = np.argmin(dist)  # index of the eigenvalue that is closest to λ
+    dist = dist_lambda_spec_H(lmbd, H_eigenvalues)  # d(λ, σ(H))
+    eig_idx = extract_first_element_of_array(np.argmin(dist))  # Index of the closest eigenvalue to λ
 
-    # plot the absolute square of the eigenvector that corresponds to the eigenvalue closest to λ
+    # Plot the absolute square of the eigenvector that corresponds to the eigenvalue closest to λ
+    N = H.shape[0]  # Number of rows / columns of H
     y_axis = np.abs(H_eigenvectors[:, eig_idx]) ** 2
-    x_axis = np.linspace(start=0, stop=length, num=length)
+    x_axis = np.linspace(start=0, stop=L, num=N)
     title = f'Eigenvalue: {H_eigenvalues[eig_idx]}'
     sns.scatterplot(y=y_axis, x=x_axis).set(title=title)
 
-    H_rows = H.shape[0]
-    H_diag_middle_idx = middle_value(H_rows)
-    I = np.identity(n=H_rows)
-    H_lambda = H - lmbd * I  # H - λ
+    # Uneven section "radius"
+    r = 50
+    m = 1  # maximal hopping length
+    ncols = 2 * r
+    nrows = 2 * (r + m)
 
-    # Calculate shift from x instead of the other way around    
-    x = 300
+    x = choose_x(perturb_H, y_axis, N, r)
+
+    # Calculate shift from x instead of the other way around  
     # x = (H_diag_middle_idx + shift) * dx
-    shift = int(x / dx) - H_diag_middle_idx
-    n = 100  # in Hege's notation: 2 * L
-    m = n + 2  # in Hege's notation: 2 * (L + m)
+    shift = int(x / dx) - middle_value(N)
     
-    # I'm assuming that the range of my operator is m = 1, i.e. H_xy = 0 for d(x,y) > m
     sections_specs = {
-        '(H - λ) section': dict(m=m, n=n, shift=shift)
+        '(H - λ) section': dict(nrows=nrows, ncols=ncols, shift=shift)
     }
 
+    I = np.identity(n=N)
+    H_lambda = H - lmbd * I  # H - λ
+
     H_lambda_results = compute_eigenvalues_and_singular_values(H_lambda, sections_specs, eigvals_only=True, sing_vals_only=True)
-    H_lambda_eigenvalues, H_lambda_sections = H_lambda_results['eigenvalues'], H_lambda_results['sections']
+    H_lambda_sections = H_lambda_results['sections']
 
     d = np.sort(dist, kind='stable')
     s = np.sort(H_lambda_sections['(H - λ) section']['S'], kind='stable')
-    L = 0.5 * n
     
     print()
-    print(f'L: {L}, λ: {lmbd}, x: {x}')
+    print(f'r: {r}, λ: {lmbd}, x: {x}')
     print()
-    print(f'    d(λ, Spec(H)):              Singular values of Q_Lλx:')
-    for i in range(5):
+    print(f'    d(λ, σ(H)):              Singular values of Q_rλx:')
+    for i in range(10):
         print(f'{i + 1} - {d[i]}       {s[i]}')
     
     print()
 
-    # generate_plot(length, perturb_H, H_lambda_eigenvalues, H_lambda_sections, plots_subfolder)
+    generate_plot(L, perturb_H, H_lambda_results['eigenvalues'], H_lambda_sections, plots_subfolder)
 
 if __name__ == '__main__':
     # free_hamiltonian()

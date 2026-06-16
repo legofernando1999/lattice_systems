@@ -1,13 +1,13 @@
 # Fdb version 4
-["biber scientific_project"] 1781464038.92695 "scientific_project.bcf" "scientific_project.bbl" "scientific_project" 1781464326.21265 0
+["biber scientific_project"] 1781533727.91788 "scientific_project.bcf" "scientific_project.bbl" "scientific_project" 1781616081.0017 0
   "sample.bib" 1780833367.75607 1713 e5693a98e079873dfafb2dddd84b409e ""
-  "scientific_project.bcf" 1781464326.15014 109484 4c16f46f3773140d66b7a257f741ca3e "pdflatex"
+  "scientific_project.bcf" 1781616080.92625 109484 4c16f46f3773140d66b7a257f741ca3e "pdflatex"
   (generated)
   "scientific_project.bbl"
   "scientific_project.blg"
   (rewritten before read)
-["pdflatex"] 1781464324.39661 "/home/fmunoz/Documents/lattice_systems/scientific_project/scientific_project.tex" "scientific_project.pdf" "scientific_project" 1781464326.21297 0
-  "/home/fmunoz/Documents/lattice_systems/scientific_project/scientific_project.tex" 1781464324.17124 22519 78822e93f126c39c2a77a3160f4defd8 ""
+["pdflatex"] 1781616079.14532 "/home/fmunoz/Documents/lattice_systems/scientific_project/scientific_project.tex" "scientific_project.pdf" "scientific_project" 1781616081.00209 0
+  "/home/fmunoz/Documents/lattice_systems/scientific_project/scientific_project.tex" 1781616078.81704 22519 4b73b7c1238d8e503e25914a210f7012 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1775415801 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1775415801 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texmf-dist/fonts/tfm/jknappen/ec/tcrm1095.tfm" 1775415801 1536 02c06700a42be0f5a28664c7273f82e7 ""
@@ -207,12 +207,12 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1780437372 5385779 47c0c393a77fd4a098bacfd57d66b88a ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1780437364 3084555 6bd387e09e100e158f965e023f05b295 ""
   "images/kde_nonperturbed_L=1000.png" 1781271578.84428 280021 22f32724e5657401f60ea6e6d18d9363 ""
-  "scientific_project.aux" 1781464326.14714 5840 8c3671f6bc6d96291341727062ff0eaf "pdflatex"
-  "scientific_project.bbl" 1781464039.37226 10794 fc5d7ba71b2844e4be26c193016a92f7 "biber scientific_project"
-  "scientific_project.out" 1781464326.14914 4732 50fbaee24ad32751c7f5d2e68c89bca4 "pdflatex"
-  "scientific_project.run.xml" 1781464326.15333 2399 c912774c5a9fc5ad2ccefa1e615f8ee7 "pdflatex"
-  "scientific_project.tex" 1781464324.17124 22519 78822e93f126c39c2a77a3160f4defd8 ""
-  "scientific_project.toc" 1781464326.15333 2274 b99ef3769703bf70635e1356f05ab934 "pdflatex"
+  "scientific_project.aux" 1781616080.92125 5840 8c3671f6bc6d96291341727062ff0eaf "pdflatex"
+  "scientific_project.bbl" 1781533728.48145 10794 fc5d7ba71b2844e4be26c193016a92f7 "biber scientific_project"
+  "scientific_project.out" 1781616080.92525 4732 50fbaee24ad32751c7f5d2e68c89bca4 "pdflatex"
+  "scientific_project.run.xml" 1781616080.92845 2399 c912774c5a9fc5ad2ccefa1e615f8ee7 "pdflatex"
+  "scientific_project.tex" 1781616078.81704 22519 4b73b7c1238d8e503e25914a210f7012 ""
+  "scientific_project.toc" 1781616080.92845 2274 b99ef3769703bf70635e1356f05ab934 "pdflatex"
   (generated)
   "scientific_project.aux"
   "scientific_project.bcf"

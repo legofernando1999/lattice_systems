@@ -368,7 +368,7 @@ We can then plot its spectrum using a kernel density estimation (KDE). The resul
    \label{fig:free_hamiltonian}
 \end{figure}
 
-In order to validate the pseudospectral inclusion bound for this operator, first we need to take an uneven section. Given the simplicity of $H_{\text{free}}$, any uneven section will do. For instance, let $r = 50$, $x = L/2$ and $\lambda \in \mathbb{R}$, then 
+In order to validate the pseudospectral inclusion bound for this operator, first we need to take an uneven section. Given the simplicity of $H_{\text{free}}$, any uneven section will do. For instance, let $r = 50$, $\lambda \in \mathbb{R}$ and $x = L/2$, then 
 
 \[
     (H_{\text{free}} - \lambda) = \begin{pmatrix}
@@ -386,7 +386,7 @@ In order to validate the pseudospectral inclusion bound for this operator, first
     \end{pmatrix}
     \Highlight[uneven_section]
     \tikz[overlay,remember picture] {
-        \node[above of=uneven_section, xshift=45pt, yshift=9pt] {$Q_{r, x, \lambda}$};
+        \node[above of=uneven_section, xshift=45pt, yshift=9pt] {$Q_{r, \lambda, x}$};
     }
 \]
 
