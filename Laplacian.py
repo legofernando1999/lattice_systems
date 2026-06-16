@@ -35,38 +35,19 @@ def middle_value(k):
     else:
         return int((k + 1) / 2)
     
-def extract_first_element_of_array(int_arr):
-    '''
-    Extract first element of array of integers.
-
-    Parameters
-    ----------
-    int_array : ndarray of ints
-        One-dimensional NumPy array of integers.
-
-    Returns
-    -------
-    int
-        The first element of the array.
-    '''
-    if int_arr.size > 1:
-        return int_arr[0]
-    else: # int_arr.size == 1
-        return int(int_arr)
-
 def choose_x(perturb_H, y_axis, N, r):
     '''
     Choose an x based on the index location of the highest value of `y_axis`.
     '''
     if perturb_H:
-        x = extract_first_element_of_array(np.argmax(y_axis))
-            
-        if x - r < 0:
-            while x - r < 0:
-                x = x + 1
-        elif x + r > N:
-            while x + r > N:
-                x = x - 1
+        x = np.argsort(y_axis)[-1]
+        x = int(x)
+
+        while x - r <= 0:
+            x = x + 1
+
+        while x + r >= N:
+            x = x - 1
     else:
         x = middle_value(N)
 
@@ -485,32 +466,47 @@ def free_hamiltonian_lambda():
     L = 1000  # space length
     dx = 1.0  # step size
     perturb_H = True
-    lmbd = 2.5  # λ
+    lmbd = 0.5  # λ
     plots_subfolder='H_lambda'
 
     H = make_free_hamiltonian(L=L, dx=dx, perturb_H=perturb_H, random_rng=(-0.2, 0.2))
     H_results = compute_eigenvalues_and_singular_values(H)
     H_eigenvalues, H_eigenvectors = H_results['eigenvalues'], H_results['eigenvectors']
 
-    dist = dist_lambda_spec_H(lmbd, H_eigenvalues)  # d(λ, σ(H))
-    eig_idx = extract_first_element_of_array(np.argmin(dist))  # Index of the closest eigenvalue to λ
-
-    # Plot the absolute square of the eigenvector that corresponds to the eigenvalue closest to λ
-    N = H.shape[0]  # Number of rows / columns of H
-    y_axis = np.abs(H_eigenvectors[:, eig_idx]) ** 2
-    x_axis = np.linspace(start=0, stop=L, num=N)
-    title = f'Eigenvalue: {H_eigenvalues[eig_idx]}'
-    sns.scatterplot(y=y_axis, x=x_axis).set(title=title)
-
     # Uneven section "radius"
-    r = 50
+    r = 100
     m = 1  # maximal hopping length
     ncols = 2 * r
     nrows = 2 * (r + m)
 
-    x = choose_x(perturb_H, y_axis, N, r)
+    dist = dist_lambda_spec_H(lmbd, H_eigenvalues)  # d(λ, σ(H))
+    dist_sorted_idx = np.argsort(dist)
 
-    # Calculate shift from x instead of the other way around  
+    N = H.shape[0]  # Number of rows / columns of H
+    x_axis = np.linspace(start=0, stop=L, num=N)
+
+    # Plot the absolute square of the eigenvectors corresponding to the 5 closest eigenvalues to λ
+    num_eig = 5
+    title = f'Eigenvectors of the eigenvalues closest to λ = {lmbd}'
+    fig, ax = plt.subplots(figsize=(8, 6))
+    for j in range(num_eig):
+        eig_idx = dist_sorted_idx[j]
+        eigvalj = H_eigenvalues[eig_idx]
+        yj_axis = np.abs(H_eigenvectors[:, eig_idx]) ** 2
+        if j == 0:
+            # Choose an x for the uneven section based on the highest value of the eigenvector corresponding to the closest eingenvalue to λ
+            x = choose_x(perturb_H, yj_axis, N, r)
+        
+        sns.scatterplot(y=yj_axis, x=x_axis, ax=ax, label=f'{j + 1} - {eigvalj:.5f}')
+
+    ax.set_title(title)
+    ax.legend(title='Eigenvalues:')
+    ax.set_xlabel('Space length')
+    ax.set_ylabel('Absolute square of eigenvector')
+
+    plt.show()
+
+    # Calculate shift from x
     # x = (H_diag_middle_idx + shift) * dx
     shift = int(x / dx) - middle_value(N)
     
@@ -530,13 +526,13 @@ def free_hamiltonian_lambda():
     print()
     print(f'r: {r}, λ: {lmbd}, x: {x}')
     print()
-    print(f'    d(λ, σ(H)):              Singular values of Q_rλx:')
-    for i in range(10):
-        print(f'{i + 1} - {d[i]}       {s[i]}')
+    print(f'    d(λ, σ(H)):        Singular values of Q_rλx:')
+    for i in range(5):
+        print(f'{i + 1} - {d[i]:.8f}         {s[i]:.8f}')
     
     print()
 
-    generate_plot(L, perturb_H, H_lambda_results['eigenvalues'], H_lambda_sections, plots_subfolder)
+    # generate_plot(L, perturb_H, H_lambda_results['eigenvalues'], H_lambda_sections, plots_subfolder)
 
 if __name__ == '__main__':
     # free_hamiltonian()
