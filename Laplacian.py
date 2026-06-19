@@ -330,13 +330,13 @@ def _create_figure(hist_data, fname):
     height_ratios = None
     if any(key.startswith('Singular') for key in hist_data):
         n_subplots = 2
-        # height_ratios = (8, 2)
         height_ratios = (1, 1)
 
     fig, axs = plt.subplots(
         nrows=n_subplots, 
         sharex=True,
-        height_ratios=height_ratios
+        height_ratios=height_ratios,
+        # figsize=(5, 3)
         )
     
     if type(axs) == matplotlib.axes._axes.Axes:
@@ -344,17 +344,9 @@ def _create_figure(hist_data, fname):
     
     palette = sns.color_palette('colorblind', as_cmap=True)
 
-    # color_idx = 0
     sv_array = np.array([], dtype=np.float64)
     for k, v in hist_data.items():
         if k.startswith('Eigenvalues'):
-            # sns.histplot(
-            #     x=v,
-            #     ax=axs[0],
-            #     binwidth=2/10,
-            #     color=palette[0],
-            #     )
-
             # Mirror data points near boundaries, calculate KDE and then ignore reflected part in order to fix Boundary Bias.
             reflected_eig, boundaries_eig = _mirror_array(v)
 
@@ -369,14 +361,6 @@ def _create_figure(hist_data, fname):
             axs[0].set_title(k)
 
         else: # Singular values
-            # sns.rugplot(
-            #     x=v,
-            #     ax=axs[1],
-            #     color=palette[color_idx],
-            #     height=0.75
-            # )
-
-            # color_idx += 1
             sv_array = np.append(sv_array, v)
 
     if sv_array.size != 0: 
@@ -392,7 +376,6 @@ def _create_figure(hist_data, fname):
         
         if n_subplots == 2:
             axs[1].set_title('Singular values')
-            # axs[1].set_yticks([])
 
     fig.tight_layout()
     
@@ -467,15 +450,14 @@ def free_hamiltonian_lambda():
     dx = 1.0  # step size
     perturb_H = True
     lmbd = 0.5  # λ
+    r = 150  # uneven section "radius"
+    m = 1  # maximal hopping length
     plots_subfolder='H_lambda'
 
     H = make_free_hamiltonian(L=L, dx=dx, perturb_H=perturb_H, random_rng=(-0.2, 0.2))
     H_results = compute_eigenvalues_and_singular_values(H)
     H_eigenvalues, H_eigenvectors = H_results['eigenvalues'], H_results['eigenvectors']
 
-    # Uneven section "radius"
-    r = 100
-    m = 1  # maximal hopping length
     ncols = 2 * r
     nrows = 2 * (r + m)
 

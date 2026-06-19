@@ -2,7 +2,7 @@
 
 ## 17/06/2026
 + FINISH THE SCIENTIFIC PROJECT. You need to start working on your Master's Thesis ASAP.
-+ Save exactly those perturbed free Hamiltonians which give a good case study for what we are trying to do. This means, if H is such that the smallest singular values (first 2 or so) of the uneven section are approximately equal (>=) to the distances d(λ, σ(H)) of the closest eigenvalues to λ, then save it. This should happen when the eigenvalue corresponds to an eigenvector whose support lies completely within the window of the uneven section. Try choosing a λ that is outside the range of eigenvalues. That way you will detect the eigenvectors corresponding to the eigenvalues lying at the boundary, and these are highly localized. 
++ Save exactly those perturbed free Hamiltonians which make a good case study for what we are trying to do. This means, if H is such that the smallest singular values (first 2 or so) of the uneven section are approximately equal (>=) to the distances d(λ, σ(H)) of the closest eigenvalues to λ, then save it. This should happen when the eigenvalue corresponds to an eigenvector whose support lies completely within the window of the uneven section. Try choosing a λ that is outside the range of eigenvalues. That way you will detect the eigenvectors corresponding to the eigenvalues lying at the boundary, and these are highly localized. 
 + Play with different window sizes, e.g. 50, 100, 150, to see if this has an effect on the singular values.
 + Optional but nice to have: Make a graphic user interface (GUI) that allows the user to move the window of the uneven section around.
 

@@ -20,5 +20,4 @@
 \contentsline {subsubsection}{\numberline {2.3.3}A General Algorithm}{7}{subsubsection.2.3.3}%
 \contentsline {section}{\numberline {3}Results in Concrete Cases}{8}{section.3}%
 \contentsline {subsection}{\numberline {3.1}The Free Hamiltonian}{8}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}The Perturbed Free Hamiltonian}{9}{subsection.3.2}%
 \contentsline {section}{\numberline {4}Conclusion and Future Work}{10}{section.4}%

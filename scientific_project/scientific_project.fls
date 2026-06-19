@@ -82,6 +82,8 @@ INPUT /usr/share/texmf-dist/tex/latex/gensymb/gensymb.sty
 INPUT /usr/share/texmf-dist/tex/latex/gensymb/gensymb.sty
 INPUT /usr/share/texmf-dist/tex/latex/jknapltx/mathrsfs.sty
 INPUT /usr/share/texmf-dist/tex/latex/jknapltx/mathrsfs.sty
+INPUT /usr/share/texmf-dist/tex/latex/multirow/multirow.sty
+INPUT /usr/share/texmf-dist/tex/latex/multirow/multirow.sty
 INPUT /usr/share/texmf-dist/tex/latex/hyperref/hyperref.sty
 INPUT /usr/share/texmf-dist/tex/latex/hyperref/hyperref.sty
 INPUT /usr/share/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty

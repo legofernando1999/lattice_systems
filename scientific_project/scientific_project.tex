@@ -20,6 +20,7 @@
 \usepackage{physics}
 \usepackage{gensymb}
 \usepackage{mathrsfs}
+\usepackage{multirow}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
 % Highlight parts of matrices
@@ -348,12 +349,12 @@ This allows us to express the Hamiltonian, $H_{\text{free}} \in \mathcal{L} (\el
 
 \begin{equation*}
     H_{\text{free}} = \begin{pmatrix}
-        1 & -\frac{1}{2} & 0 & 0 & \cdots & -\frac{1}{2} \\
-        -\frac{1}{2} & 1 & -\frac{1}{2} & 0 & \cdots & 0 \\
-        0 & -\frac{1}{2} & 1 & -\frac{1}{2} & \cdots & 0 \\
-        0& 0 & -\frac{1}{2} & 1 & \cdots & 0 \\
-        \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
-        -\frac{1}{2} & 0 & 0 & 0 & -\frac{1}{2} & 1
+        1 & -\frac{1}{2} & & & & -\frac{1}{2} \\
+        -\frac{1}{2} & 1 & -\frac{1}{2} & & & \\
+        & -\frac{1}{2} & 1 & & & \\
+        & & & \ddots & & \\
+        & & & & 1 & -\frac{1}{2} \\
+        -\frac{1}{2} & & & & -\frac{1}{2} & 1
     \end{pmatrix}
 \end{equation*}
 
@@ -363,12 +364,12 @@ We can then plot its spectrum using a kernel density estimation (KDE). The resul
 
 \begin{figure}[h]
    \centering
-   \includegraphics[scale=0.7]{kde_nonperturbed_L=1000.png}
+   \includegraphics[scale=0.8]{kde_nonperturbed_L=1000.png}
    \caption{KDE plot of the spectrum of the free Hamiltonian, with $L = 1000$ and $\Delta x = 1$.}
    \label{fig:free_hamiltonian}
 \end{figure}
 
-In order to validate the pseudospectral inclusion bound for this operator, first we need to take an uneven section. Given the simplicity of $H_{\text{free}}$, any uneven section will do. For instance, let $r = 50$, $\lambda \in \mathbb{R}$ and $x = L/2$, then 
+Now, in order to validate the pseudospectral inclusion bound for this operator, first we need to take an uneven section. In fact, given the simplicity of $H_{\text{free}}$, any uneven section will do. For instance, let $r \in \{ 50, 100, 150 \}$, $\lambda \in \mathbb{R}$, and $x = 500$, then an uneven section looks like so
 
 \[
     (H_{\text{free}} - \lambda) = \begin{pmatrix}
@@ -390,7 +391,32 @@ In order to validate the pseudospectral inclusion bound for this operator, first
     }
 \]
 
-\subsection{The Perturbed Free Hamiltonian}
+And, for different $\lambda$ values, we get the following results:
+
+\begin{center}
+    \begin{tabular}{ |c||c|c| }
+        \hline
+        \multicolumn{3}{|c|}{Pseudospectral Inclusion Bound} \\
+        \hline
+        $\left( r, \lambda \right)$ & $d\left(\lambda, \sigma(H)\right)$ & $\varepsilon_{r, \lambda, 500}$ \\
+        \hline
+        $(50, -0.1)$ & 0.10000000 & 0.10050663 \\
+        $(100, -0.1)$ & 0.10000000 & 0.10012501 \\
+        $(150, -0.1)$ & 0.10000000 & 0.10005531 \\
+        $(50, 0.5)$ & 0.00090627 & 0.02665666 \\
+        $(100, 0.5)$ & 0.00090627 & 0.01340192 \\
+        $(150, 0.5)$ & 0.00090627 & 0.00897872 \\
+        $(50, 1.2)$ & 0.00202476 & 0.02987587 \\
+        $(100, 1.2)$ & 0.00202476 & 0.01522516 \\
+        $(150, 1.2)$ & 0.00202476 & 0.01016129 \\
+        $(50, 2.3)$ & 0.30000492 & 0.30049423 \\
+        $(100, 2.3)$ & 0.30000492 & 0.30012347 \\
+        $(150, 2.3)$ & 0.30000492 & 0.30005486 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+These data clearly show that the Pseudospectral Inclusion Bound is valid in the present case. From them we can also see that increasing the window size of the uneven section lowers the bound. The reason for this is that ... Another interesting conclusion we can draw from them is that choosing a $\lambda$ outside of the range of the spectrum yields a better bound ...
 
 \newpage
 
