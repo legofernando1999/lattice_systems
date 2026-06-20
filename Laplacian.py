@@ -475,6 +475,7 @@ def free_hamiltonian_lambda():
         eig_idx = dist_sorted_idx[j]
         eigvalj = H_eigenvalues[eig_idx]
         yj_axis = np.abs(H_eigenvectors[:, eig_idx]) ** 2
+        # yj_axis = H_eigenvectors[:, eig_idx]
         if j == 0:
             # Choose an x for the uneven section based on the highest value of the eigenvector corresponding to the closest eingenvalue to λ
             x = choose_x(perturb_H, yj_axis, N, r)

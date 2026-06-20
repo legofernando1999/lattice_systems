@@ -249,13 +249,13 @@ Thus, the $\varepsilon$-pseudospectrum of a normal operator is simply the $\vare
 
 \subsection{Approximating the (Pseudo-)Spectrum with Full Error Control}
 
-As shown in \cite{paulhege2025}, as long as we are dealing with operators of finite local complexity, it is always possible to compute the spectrum in the normal case, and the pseudospectrum in the nonnormal one. In this section we provide the theorems that led to these results.
+As shown in \cite{paulhege2025}, as long as we are dealing with operators with finite local complexity, it is always possible to compute the spectrum in the normal case, and the pseudospectrum in the nonnormal one. In this section we provide the theorems that led to these results.
 
-\subsubsection{The Pseudospectral Inclusion Bound}
+\subsubsection{The Pseudospectral Inclusion Bound (PIB)}
 
-An upper bound on $\rho_H$ can be obtained by performing a singular value decomposition (SVD) on the rectangular matrix $\left( H_{yz} \right)_{y \in B_{r + m}(x), \, z \in B_{r}(x)}$, where $x \in \mathbb{R}^n$ and $r, \, m > 0$ are fixed numbers.
+An upper bound on $\rho_H$ can be obtained by performing a singular value decomposition on the rectangular matrix $\left( H_{yz} \right)_{y \in B_{r + m}(x), \, z \in B_{r}(x)}$, where $x \in \mathbb{R}^n$ and $r, \, m > 0$ are fixed numbers.
 
-Recall that a singular value decomposition of a matrix $A \in \mathbb{C}^{m \times n}$ is a factorization into a product of matrices $A = U S V^*$, where $U \in \mathbb{C}^{m \times m}$ and $V \in \mathbb{C}^{n \times n}$ are unitary, and $S \in \mathbb{C}^{m \times n}$ is diagonal. The matrix $S$ contains the square roots of the nonnegative eigenvalues of both $AA^*$ and $A^*A$, and these are the \textit{singular values} of $A$ \cite{gilbertstrang}.
+\textbf{Remark.} Recall that a \textit{singular value decomposition} (SVD) of a matrix $A \in \mathbb{C}^{m \times n}$ is a factorization into a product of matrices $A = U S V^*$, where $U \in \mathbb{C}^{m \times m}$ and $V \in \mathbb{C}^{n \times n}$ are unitary, and $S \in \mathbb{C}^{m \times n}$ is diagonal. The matrix $S$ contains the square roots of the nonnegative eigenvalues of both $AA^*$ and $A^*A$, and these are the \textit{singular values} of $A$ \cite{gilbertstrang}.
 
 \textbf{Definition.} Let $H$ be a discrete operator with finite range $m > 0$, let $x \in \mathbb{R}^n$ be any point, $r > 0$ and $\lambda \in \mathbb{C}$. The \textit{uneven section} for these data is the linear operator
 \begin{gather*}
@@ -270,21 +270,7 @@ Since $\mathcal{H}_{B_r(x)}$ and $\mathcal{H}_{B_{r + m}(x)}$ are finite dimensi
     \rho_H (\lambda) \leq \varepsilon_{r, \lambda, x}
 \end{equation}
 
-\textit{Proof.} We can write the SVD of $Q_{r, \lambda, x}$ as
-\begin{equation*}
-    Q_{r, \lambda, x} = \sum_{i=1}^n \ket{u_i} s_i \bra{v_i}
-\end{equation*}
-
-where $(u_i)_{i=1,\dots,n}$ are the first $n$ columns of $U$, $(v_i)_{i=1,\dots,n}$ are the columns of $V$, and $(s_i)_{i=1,\dots,n}$ are the diagonal elements of $\Sigma$. We assume that the $(s_i)_{i=1,\dots,n}$ are sorted in increasing order so that $\varepsilon_{r, \lambda, x} = s_1$.
-
-Then $v_1$, considered as a vector in $\mathcal{H}$ via the canonical inclusion $\iota: \mathcal{H}_{B_r(x)} \rightarrow \mathcal{H}$, is an $\varepsilon_{r, \lambda, x}$-quasimode for $H$. This follows from
-\begin{align*}
-    \left( H - \lambda \right) v_1 &= \mathbf{1}_{B_{r + m}(x)} \left( H - \lambda \right) v_1 && &\text{(by the finite range of $H$)} \\
-    &= Q_{r, \lambda, x} v_1 \\
-    &= s_1 u_1
-\end{align*}
-
-and therefore $\Vert \left( H - \lambda \right) v_1 \Vert = s_1 \Vert u_1 \Vert = s_1$. We conclude that $\Vert \left( H - \lambda \right) v_1 \Vert \leq s_1 = \varepsilon_{r, \lambda, x}$ ($a = b \Rightarrow a \leq b$), and thus $v_1$ is an $\varepsilon_{r, \lambda, x}$-quasimode (by definition of a quasimode), which implies that $\lambda \in \sigma_{\varepsilon_{r, \lambda, x}} (H)$ by definition of the spectrum (eq. \ref{eq:lower_norm_function}).
+A proof can be found in \cite{paulhege2025}.
 
 \subsubsection{The Spectral Gap Bound}
 
@@ -369,7 +355,7 @@ We can then plot its spectrum using a kernel density estimation (KDE). The resul
    \label{fig:free_hamiltonian}
 \end{figure}
 
-Now, in order to validate the pseudospectral inclusion bound for this operator, first we need to take an uneven section. In fact, given the simplicity of $H_{\text{free}}$, any uneven section will do. For instance, let $r \in \{ 50, 100, 150 \}$, $\lambda \in \mathbb{R}$, and $x = 500$, then an uneven section looks like so
+Now, in order to validate the pseudospectral inclusion bound for this operator, first we need to take an uneven section. In fact, given the simplicity of $H_{\text{free}}$, we can center it at any point. For instance, let $r \in \{ 50, 100, 150 \}$, $\lambda \in \mathbb{R}$, and $x = 500$, then an uneven section looks like so
 
 \[
     (H_{\text{free}} - \lambda) = \begin{pmatrix}
@@ -392,35 +378,49 @@ Now, in order to validate the pseudospectral inclusion bound for this operator, 
 \]
 
 And, for different $\lambda$ values, we get the following results:
+\vspace{0.5cm}
 
+\setlength{\tabcolsep}{8pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.2} % Default value: 1
+
+\begingroup
 \begin{center}
     \begin{tabular}{ |c||c|c| }
         \hline
-        \multicolumn{3}{|c|}{Pseudospectral Inclusion Bound} \\
+        \multicolumn{3}{|c|}{Pseudospectral Inclusion Bound (PIB)} \\
         \hline
         $\left( r, \lambda \right)$ & $d\left(\lambda, \sigma(H)\right)$ & $\varepsilon_{r, \lambda, 500}$ \\
         \hline
-        $(50, -0.1)$ & 0.10000000 & 0.10050663 \\
-        $(100, -0.1)$ & 0.10000000 & 0.10012501 \\
-        $(150, -0.1)$ & 0.10000000 & 0.10005531 \\
-        $(50, 0.5)$ & 0.00090627 & 0.02665666 \\
-        $(100, 0.5)$ & 0.00090627 & 0.01340192 \\
-        $(150, 0.5)$ & 0.00090627 & 0.00897872 \\
-        $(50, 1.2)$ & 0.00202476 & 0.02987587 \\
-        $(100, 1.2)$ & 0.00202476 & 0.01522516 \\
-        $(150, 1.2)$ & 0.00202476 & 0.01016129 \\
-        $(50, 2.3)$ & 0.30000492 & 0.30049423 \\
-        $(100, 2.3)$ & 0.30000492 & 0.30012347 \\
-        $(150, 2.3)$ & 0.30000492 & 0.30005486 \\
+        $(50, -0.1)$ & 0.100000 & 0.100507 \\
+        $(100, -0.1)$ & 0.100000 & 0.100125 \\
+        $(150, -0.1)$ & 0.100000 & 0.100055 \\
+        \hline
+        $(50, 0.5)$ & 0.000906 & 0.026657 \\
+        $(100, 0.5)$ & 0.000906 & 0.013402 \\
+        $(150, 0.5)$ & 0.000906 & 0.008979 \\
+        \hline
+        $(50, 1.2)$ & 0.002025 & 0.029876 \\
+        $(100, 1.2)$ & 0.002025 & 0.015225 \\
+        $(150, 1.2)$ & 0.002025 & 0.010161 \\
+        \hline
+        $(50, 2.3)$ & 0.300005 & 0.300494 \\
+        $(100, 2.3)$ & 0.300005 & 0.300123 \\
+        $(150, 2.3)$ & 0.300005 & 0.300055 \\
         \hline
     \end{tabular}
 \end{center}
+\endgroup
 
-These data clearly show that the Pseudospectral Inclusion Bound is valid in the present case. From them we can also see that increasing the window size of the uneven section lowers the bound. The reason for this is that ... Another interesting conclusion we can draw from them is that choosing a $\lambda$ outside of the range of the spectrum yields a better bound ...
+\vspace{0.5cm}
+These data clearly show that the PIB is valid in the present case. Moreover, from them we can see that increasing the window size ($r$) of the uneven section lowers the bound. The reason for this is that a larger window will contain more of the support of the eigenvector of $H_{\text{free}}$ corresponding to the eigenvalue closest to our chosen $\lambda$, and so, the SVD can produce a better approximation to both the eigenvector and the eigenvalue. Another interesting conclusion we can draw from them is that choosing a $\lambda$ outside of the range of the spectrum yields a smaller bound because the eigenvectors with eigenvalues at the boundary are more localized.
 
 \newpage
 
 \section{Conclusion and Future Work}
+
+A lower bound on $\rho_H$ and a general algorithm for approximating the pseudospectra of infinite-volume operators with FLC were proposed in \cite{paulhege2025}, and here we tested the pseudospectral inclusion bound against the free Hamiltonian with positive results.
+
+Future work should focus on validating the PIB and the spectral gap bound against different Hamiltonians, e.g., random Hamiltonians, Hamiltonians emerging from quasicrystal systems, etc. Additionally, combining the computational tools developed for this work with the bounds on the lower norm function should enable us to prove spectral gaps of infinite-volume one-body operators.
 
 \newpage
 
