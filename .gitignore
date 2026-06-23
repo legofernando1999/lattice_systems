@@ -1,2 +1,3 @@
-# Ignore the entire 'plots' folder
+# Ignore the entire 'plots' and 'hamiltonians' folder
 plots/
+hamiltonians/
