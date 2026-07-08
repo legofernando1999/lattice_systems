@@ -217,6 +217,38 @@ def dist_lambda_spec_H(lmbd, spectrum) -> np.ndarray:
     '''
     return np.abs(lmbd - spectrum)
 
+def spectral_gap_bound(epsilon_r_lmbd, r, H, m, q, n=1) -> float:
+    '''
+    Compute the Spectral Gap Bound.
+
+    Parameters
+    ----------
+    epsilon_r_lmbd : float
+        Smallest singular value of Q_rλx.
+    r : int
+        Window size of Q_rλx.
+    H : ndarray
+        Hamiltonian matrix.
+    m : float
+        Finite range (maximal hopping length).
+    q : float
+        Packing radius of uniformly discrete set.
+    n : int
+        Dimension of space.
+
+    Returns
+    -------
+    float
+        Spectral Gap Bound.
+    '''
+    def bound_constant(H: np.ndarray, m: float, q: float, n: int) -> float:
+        '''Compute the constant appearing in the Spectral Gap Bound.'''
+        M = np.max(np.abs(H))
+        return m * M * (36 * m / q) ** (0.5 * n)
+    
+    C = bound_constant(H, m, q, n)
+    return epsilon_r_lmbd - C / r
+
 def _mirror_array(arr) -> tuple[np.ndarray, tuple]:
     '''
     Extend array by mirroring it across its boundaries.
@@ -365,10 +397,11 @@ def free_hamiltonian_lambda():
     '''
     L = 1000  # space length
     dx = 1.0  # step size
-    perturb_H = True
-    lmbd = -0.2  # λ
-    r = 150  # uneven section "radius"
+    perturb_H = False
+    lmbd = -0.5  # λ
+    r = 499  # uneven section window size
     m = 1  # maximal hopping length
+    num_eig = 1
     plots_subfolder='H_lambda'
     save_hamiltonian = False
     hamiltonian_filename = 'hamiltonian_3.json'
@@ -384,16 +417,12 @@ def free_hamiltonian_lambda():
     N = hamiltonian.shape[0]  # Number of rows / columns of H
     H_eigenvalues, H_eigenvectors = hamiltonian.eigenvalues, hamiltonian.eigenvectors
 
-    ncols = 2 * r
-    nrows = 2 * (r + m)
-
     dist = dist_lambda_spec_H(lmbd, H_eigenvalues)  # d(λ, σ(H))
     dist_sorted_idx = np.argsort(dist)
 
     x_axis = np.linspace(start=0, stop=L, num=N)
 
     # Plot the absolute square of the eigenvectors corresponding to the 5 closest eigenvalues to λ
-    num_eig = 10
     title = f'Eigenvectors of the eigenvalues closest to λ = {lmbd}'
     fig, ax = plt.subplots(figsize=(8, 6))
     for j in range(num_eig):
@@ -425,6 +454,9 @@ def free_hamiltonian_lambda():
     # x = (H_diag_middle_idx + shift) * dx
     shift = int(x / dx) - middle_value(N)
     
+    ncols = 2 * r
+    nrows = 2 * (r + m)
+
     sections_specs = {
         '(H - λ) section': dict(nrows=nrows, ncols=ncols, shift=shift)
     }
@@ -442,9 +474,16 @@ def free_hamiltonian_lambda():
     print(f'r: {r}, λ: {lmbd}, x: {x}')
     print()
     print(f'   d(λ, σ(H)):        Singular values of Q_rλx:')
-    for i in range(10):
+    for i in range(num_eig):
         print(f'{i + 1}: {d[i]:.8f}        {s[i]:.8f}')
     
+    print()
+
+    epsilon_r_lmbd_x = s.min()
+    epsilon_r_lmbd = epsilon_r_lmbd_x  # Due to periodicity
+    lower_bound = spectral_gap_bound(epsilon_r_lmbd=epsilon_r_lmbd, r=r, H=H_lambda, m=m, q=dx)
+
+    print(f'Spectral Gap Bound: {lower_bound}')
     print()
 
     # generate_plot(L, perturb_H, hamiltonian_lambda.eigenvalues, H_lambda_sections, plots_subfolder)

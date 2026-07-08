@@ -65,19 +65,19 @@ class Hamiltonian:
             # Random values should be applied symmetrically, otherwise the matrix becomes non-Hermitian
             rng = np.random.default_rng()
             
-            # Perturb the main diagonal.
+            # Perturb the main diagonal. This represents the addition of a random potential
             H = H + np.diag(rng.uniform(low=random_rng[0], high=random_rng[1], size=N))
             
-            # Perturb sub-diagonals
-            random_vals_sub_diag = rng.uniform(low=random_rng[0], high=random_rng[1], size=N - 1)
-            H = H + np.diag(random_vals_sub_diag, k=1) + np.diag(random_vals_sub_diag, k=-1)
+            # # Perturb sub-diagonals
+            # random_vals_sub_diag = rng.uniform(low=random_rng[0], high=random_rng[1], size=N - 1)
+            # H = H + np.diag(random_vals_sub_diag, k=1) + np.diag(random_vals_sub_diag, k=-1)
             
-            # Perturb upper right and lower left corners
-            # I think I shouldn't mess with these corners as they encode the periodic boundary conditions. I'm not sure this is an issue, though.
-            # As long as I perturb both corners equally, it should be fine, right?
-            random_val_corner = rng.uniform(low=random_rng[0], high=random_rng[1])
-            H[0, -1] = H[0, -1] + random_val_corner
-            H[-1, 0] = H[-1, 0] + random_val_corner
+            # # Perturb upper right and lower left corners
+            # # I think I shouldn't mess with these corners as they encode the periodic boundary conditions. I'm not sure this is an issue, though.
+            # # As long as I perturb both corners equally, it should be fine, right?
+            # random_val_corner = rng.uniform(low=random_rng[0], high=random_rng[1])
+            # H[0, -1] = H[0, -1] + random_val_corner
+            # H[-1, 0] = H[-1, 0] + random_val_corner
 
         return cls(matrix=H, is_hermitian=True, eigvals_only=eigvals_only)
 

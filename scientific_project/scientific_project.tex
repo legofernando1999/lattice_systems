@@ -121,7 +121,7 @@ The broad aim of this work is to validate and contribute to the understanding of
 
 \subsubsection{Metric and open balls on $\mathbb{R}^n$}
 
-In this dissertation, unless otherwise stated, we define the distance $d$ on $\mathbb{R}^n$ as the \textit{maximum distance}
+In this project, unless otherwise stated, we define the distance $d$ on $\mathbb{R}^n$ as the \textit{maximum distance}
 
 \begin{equation}
     d(x, y) = d((x_1, \dots, x_n), (y_1, \dots, y_n)) := \max_{k=1, \dots, n} \vert x_k - y_k \vert
@@ -151,10 +151,10 @@ For any $x \in \mathbb{R}^n$ and $r > 0$, the finite-dimensional subspace $\math
 
 \subsubsection{Short- and Finite-Range Operators}
 
-\textbf{Definition.} Let $H$ be a discrete operator in dimension $n$. Then $H$ is called \textit{short-range} if there exists $C$ and $\varepsilon > 0$ such that
+\textbf{Definition.} Let $H$ be a discrete operator in dimension $n$. Then $H$ is called \textit{short-range} if there exists a $K$ and an $\varepsilon > 0$ such that
 
 \begin{equation}
-    \vert H_{xy} \vert \leq C d(x, y)^{-(n + \varepsilon)}
+    \vert H_{xy} \vert \leq K d(x, y)^{-(n + \varepsilon)}
 \end{equation}
 
 for all $x, y \in \Gamma$.
@@ -247,9 +247,9 @@ Thus, the $\varepsilon$-pseudospectrum of a normal operator is simply the $\vare
     \item The pseudospectra are strictly nested supersets of the spectrum: $\bigcap_{\varepsilon > 0} \sigma_{\varepsilon} (H) = \sigma(H)$, and conversely, for any $\delta > 0$, $\sigma_{\varepsilon + \delta} (H) \supseteq \sigma_{\varepsilon} (H) + \Delta_{\delta}$, where $\Delta_{\delta}$ is the open disk of radius $\delta$ and $+$ is the Minkowski sum.
 \end{itemize}
 
-\subsection{Approximating the (Pseudo-)Spectrum with Full Error Control}
+\subsection{Approximating Spectra and Pseudospectra with Full Error Control}
 
-As shown in \cite{paulhege2025}, as long as we are dealing with operators with finite local complexity, it is always possible to compute the spectrum in the normal case, and the pseudospectrum in the nonnormal one. In this section we provide the theorems that led to these results.
+As shown in \cite{paulhege2025}, for operators with finite local complexity, it is always possible to compute the spectrum (in the normal case) or the pseudospectrum (in the nonnormal case) with two-sided error control. In this section we provide the theorems that led to these results.
 
 \subsubsection{The Pseudospectral Inclusion Bound (PIB)}
 
@@ -315,13 +315,13 @@ For a proof of either of these results, see \cite{paulhege2025}.
 
 \section{Results in Concrete Cases}
 
-\subsection{The Free Hamiltonian}
+\subsection{The Free Time-Independent One-Dimensional Periodic Schrödinger Equation}
 
 As our first case, we study the discretization of the time-independent one-dimensional free Schrödinger equation with periodic boundary conditions.
 
 The finite difference method for the boundary-value problem,
 \begin{equation*}
-    H_{\text{free}} \psi(x) = -\frac{1}{2}\frac{\diff^2}{\diffx^2}\psi(x) = E \psi(x), \quad \text{for} \; 0 \leq x \leq L, \quad \text{with} \; \psi(0) = \psi(L)
+    H \psi(x) = -\frac{1}{2}\frac{\diff^2}{\diffx^2}\psi(x) = E \psi(x), \quad \text{for} \; 0 \leq x \leq L, \quad \text{with} \; \psi(0) = \psi(L)
 \end{equation*}
 
 requires that we select an integer $N > 0$ and divide the interval $[0, L]$ into $(N - 1)$ equal subintervals whose endpoints are the mesh points $x_i = i \Delta x$, for $i = 0, 1, 2, \dots, N - 1$, where $\Delta x = L / (N - 1)$. Using a centered-difference formula for $\psi''(x_i)$ together with the boundary conditions, we get the system of equations
@@ -331,10 +331,10 @@ requires that we select an integer $N > 0$ and divide the interval $[0, L]$ into
     \text{and} \; \psi_0 &= \psi_{N-1}.
 \end{align*}
 
-This allows us to express the Hamiltonian, $H_{\text{free}} \in \mathcal{L} (\ell^2(\mathbb{Z}))$, in matrix form as 
+This allows us to express the Hamiltonian, $H_{\text{Discrete}} \in \mathcal{L} (\ell^2(\mathbb{Z}))$, in matrix form as 
 
 \begin{equation*}
-    H_{\text{free}} = \begin{pmatrix}
+    H_N = \begin{pmatrix}
         1 & -\frac{1}{2} & & & & -\frac{1}{2} \\
         -\frac{1}{2} & 1 & -\frac{1}{2} & & & \\
         & -\frac{1}{2} & 1 & & & \\
