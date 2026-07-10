@@ -28,9 +28,10 @@ class Hamiltonian:
     @classmethod
     def construct_free_hamiltonian(cls, L, dx, perturb_H=False, random_rng=(-0.1, 0.1),  eigvals_only=False):
         '''
-        Construct the matrix representation of the free-particle Hamiltonian
-        H_free ψ(x) = -1/2 d^2/dx^2 ψ(x) = E ψ(x), for 0 ≤ x ≤ L, 
-        using the finite difference method with periodic boundary conditions ψ(0) = ψ(L).
+        Using the finite difference method, construct the matrix representation of the Hamiltonian for a one-dimensional 
+        free particle governed by the time-independent Schrödinger equation:
+        `-1/2 d^2/dx^2 ψ(x) = E ψ(x)`, for `0 ≤ x ≤ L`, 
+        subject to periodic boundary conditions, `ψ(0) = ψ(L)`.
 
         Parameters
         ----------

@@ -1,4 +1,6 @@
-'''Discretization of the time-independent one-dimensional free Schroedinger equation with periodic boundary conditions.'''
+'''
+Discretization of the one-dimensional time-independent Schroedinger equation for a free particle with periodic boundary conditions.
+'''
 import numpy as np
 from scipy import linalg as la
 import matplotlib
@@ -392,16 +394,16 @@ def free_hamiltonian():
 
 def free_hamiltonian_lambda():
     '''
-    Compute the spectrum of (H - λ), where H is the Hamiltonian of the one-dimensional time-independent free Schroedinger equation with periodic boundary conditions
+    Compute the spectrum of (H - λ), where H is the Hamiltonian of the free one-dimensional time-independent Schroedinger equation with periodic boundary conditions
     and λ is any real number. 
     '''
     L = 1000  # space length
     dx = 1.0  # step size
     perturb_H = False
     lmbd = -0.5  # λ
-    r = 499  # uneven section window size
+    r = 150  # uneven section window size
     m = 1  # maximal hopping length
-    num_eig = 1
+    num_eig = 5
     plots_subfolder='H_lambda'
     save_hamiltonian = False
     hamiltonian_filename = 'hamiltonian_3.json'
@@ -418,6 +420,7 @@ def free_hamiltonian_lambda():
     H_eigenvalues, H_eigenvectors = hamiltonian.eigenvalues, hamiltonian.eigenvectors
 
     dist = dist_lambda_spec_H(lmbd, H_eigenvalues)  # d(λ, σ(H))
+    dist_sorted = np.sort(dist, kind='stable')
     dist_sorted_idx = np.argsort(dist)
 
     x_axis = np.linspace(start=0, stop=L, num=N)
@@ -467,28 +470,77 @@ def free_hamiltonian_lambda():
 
     H_lambda_sections = svd_uneven_sections(H_lambda, sections_specs, singular_vals_only=True)
 
-    d = np.sort(dist, kind='stable')
-    s = np.sort(H_lambda_sections['(H - λ) section']['S'], kind='stable')
+    s_sorted = np.sort(H_lambda_sections['(H - λ) section']['S'], kind='stable')
     
     print()
     print(f'r: {r}, λ: {lmbd}, x: {x}')
     print()
     print(f'   d(λ, σ(H)):        Singular values of Q_rλx:')
     for i in range(num_eig):
-        print(f'{i + 1}: {d[i]:.8f}        {s[i]:.8f}')
+        print(f'{i + 1}: {dist_sorted[i]:.8f}        {s_sorted[i]:.8f}')
     
-    print()
-
-    epsilon_r_lmbd_x = s.min()
-    epsilon_r_lmbd = epsilon_r_lmbd_x  # Due to periodicity
-    lower_bound = spectral_gap_bound(epsilon_r_lmbd=epsilon_r_lmbd, r=r, H=H_lambda, m=m, q=dx)
-
-    print(f'Spectral Gap Bound: {lower_bound}')
     print()
 
     # generate_plot(L, perturb_H, hamiltonian_lambda.eigenvalues, H_lambda_sections, plots_subfolder)
 
+def lower_norm_fct_bounds():
+    '''
+    Compute the Pseudospectral Inclusion Bound (upper bound) and the Spectral Gap Bound (lower bound) for the Hamiltonian of
+    the free one-dimensional time-independent Schrödinger equation with periodic boundary conditions.
+    '''
+    L = 1000  # space length
+    dx = 1.0  # step size
+    perturb_H = False
+    r_range = range(50, 300, 50)  # uneven section window size
+    lmbd_range = (-0.1, 0.5, 1.2, 2.3)  # λ
+    x = 501
+    m = 1  # maximal hopping length
+
+    # Construct new Hamiltonian
+    hamiltonian = Hamiltonian.construct_free_hamiltonian(L=L, dx=dx, perturb_H=perturb_H, random_rng=(-0.2, 0.2), eigvals_only=True)
+
+    H = hamiltonian.matrix
+    N = hamiltonian.shape[0]  # Number of rows / columns of H
+    I = np.identity(n=N)  # Identity matrix with the same shape as H
+    H_eigenvalues = hamiltonian.eigenvalues
+
+    print()
+    print('| {:^8} | {:^10} | {:^11} | {:^11} |'.format('(r, λ)', 'd(λ, σ(H))', 'Upper bound', 'Lower bound'))
+    print()
+
+    for lmbd in lmbd_range:
+        for r in r_range:
+            dist = dist_lambda_spec_H(lmbd, H_eigenvalues)  # d(λ, σ(H))
+            dist_sorted = np.sort(dist, kind='stable')
+
+            # Calculate shift from x
+            shift = int(x / dx) - middle_value(N)
+            
+            ncols = 2 * r
+            nrows = 2 * (r + m)
+
+            sections_specs = {
+                '(H - λ) section': dict(nrows=nrows, ncols=ncols, shift=shift)
+            }
+            
+            hamiltonian_lambda = Hamiltonian((H - lmbd * I), eigvals_only=True)  # H - λ
+            H_lambda = hamiltonian_lambda.matrix
+
+            H_lambda_sections = svd_uneven_sections(H_lambda, sections_specs, singular_vals_only=True)
+            s_sorted = np.sort(H_lambda_sections['(H - λ) section']['S'], kind='stable')
+
+            epsilon_r_lmbd_x = s_sorted.min()
+            epsilon_r_lmbd = epsilon_r_lmbd_x  # Due to periodicity
+            lower_bound = spectral_gap_bound(epsilon_r_lmbd=epsilon_r_lmbd, r=r, H=H_lambda, m=m, q=dx)
+
+            # LaTeX format
+            r_lmbd_str = f'$({r}, {lmbd})$'
+            print('{} & {:.6f} & {:.6f} & {:.6f} \\\\'.format(r_lmbd_str, dist_sorted[0], s_sorted[0], lower_bound))
+        
+        print('\\hline')
+
 if __name__ == '__main__':
     # free_hamiltonian()
-    free_hamiltonian_lambda()
+    # free_hamiltonian_lambda()
+    lower_norm_fct_bounds()
     print(f'{__file__} complete!')
