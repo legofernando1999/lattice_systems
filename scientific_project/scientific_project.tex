@@ -53,6 +53,7 @@
 \graphicspath{{./images/}}
 
 \DeclareMathOperator{\spn}{span}
+\DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\diff}{d}
 \DeclareMathOperator{\diffx}{dx}
 
@@ -241,21 +242,19 @@ Thus, the $\varepsilon$-pseudospectrum of a normal operator is simply the $\vare
     The distinction between them arises, and plays a crucial role, in passing to non-Hermitian equations where, as we have seen, true eigenvalues do not in general describe the operator adequately; on the other hand ... systems of mutually orthogonal $\varepsilon$-approximate eigenfunctions are easily constructed, and the behavior of $\varepsilon$-approximate eigenvalues, as well as their role in explaining the action of the operator, carry over smoothly from the Hermitian case.
 \end{displayquote}
 
-\textbf{Theorem.} Let $H$ be a closed operator on a complex Banach space, then the pseudospectra $\{ \sigma_{\varepsilon} (H) \}_{\varepsilon > 0}$ have the following properties \cite{pseudospectra}.
-\begin{itemize}
-    \item Each $\sigma_{\varepsilon} (H)$ is a nonempty open subset of $\mathbb{C}$, and any bounded connected component of $\sigma_{\varepsilon} (H)$ intersects the spectrum $\sigma(H)$.
-    \item The pseudospectra are strictly nested supersets of the spectrum: $\bigcap_{\varepsilon > 0} \sigma_{\varepsilon} (H) = \sigma(H)$, and conversely, for any $\delta > 0$, $\sigma_{\varepsilon + \delta} (H) \supseteq \sigma_{\varepsilon} (H) + \Delta_{\delta}$, where $\Delta_{\delta}$ is the open disk of radius $\delta$ and $+$ is the Minkowski sum.
-\end{itemize}
-
 \subsection{Approximating Spectra and Pseudospectra with Full Error Control}
 
 As shown in \cite{paulhege2025}, for operators with finite local complexity, it is always possible to compute the spectrum (in the normal case) or the pseudospectrum (in the nonnormal case) with two-sided error control. In this section we provide the theorems that led to these results.
 
 \subsubsection{The Pseudospectral Inclusion Bound (PIB)}
 
-An upper bound on $\rho_H$ can be obtained by performing a singular value decomposition on the rectangular matrix $\left( H_{yz} \right)_{y \in B_{r + m}(x), \, z \in B_{r}(x)}$, where $x \in \mathbb{R}^n$ and $r, \, m > 0$ are fixed numbers.
+We begin by stating two theorems regarding the existence and uniqueness of the \textit{singular value decomposition} (SVD). A tool that will enable us to obtain an upper bound on $\rho_H$.
 
-\textbf{Remark.} Recall that a \textit{singular value decomposition} (SVD) of a matrix $A \in \mathbb{C}^{m \times n}$ is a factorization into a product of matrices $A = U S V^*$, where $U \in \mathbb{C}^{m \times m}$ and $V \in \mathbb{C}^{n \times n}$ are unitary, and $S \in \mathbb{C}^{m \times n}$ is diagonal. The matrix $S$ contains the square roots of the nonnegative eigenvalues of both $AA^*$ and $A^*A$, and these are the \textit{singular values} of $A$ \cite{gilbertstrang}.
+\textbf{Theorem (Existence).} Let $A \in \mathbb{C}^{n \times p}$, where $n \geq p$. Then there exist unitary matrices $U$ and $V$ such that $U^*AV = S$, where $S = \diag(s_1, s_2, \dots, s_p)$ with $s_1 \geq s_2 \geq \dots \geq s_p \geq 0$. 
+
+\textbf{Theorem (Uniqueness).} Let $A \in \mathbb{C}^{n \times p}$ have the singular value decomposition $U^*AV = S$. Let $\hat{U}^*A\hat{V} = \hat{S}$ be another singular value decomposition. Then $\hat{S} = S$. Moreover, $\hat{V} = VQ$ where $Q = V^*\hat{V}$ is unitary and $s_i \neq s_j \Rightarrow q_{ij} = 0$ \cite{matrixalgorithms}.
+
+\textbf{Remark.} The matrix $S$ contains the square roots of the nonnegative eigenvalues of both $AA^*$ and $A^*A$, and these are the \textit{singular values} of $A$ \cite{gilbertstrang}.
 
 \textbf{Definition.} Let $H$ be a discrete operator with finite range $m > 0$, let $x \in \mathbb{R}^n$ be any point, $r > 0$ and $\lambda \in \mathbb{C}$. The \textit{uneven section} for these data is the linear operator
 \begin{gather*}
@@ -315,23 +314,30 @@ For a proof of either of these results, see \cite{paulhege2025}.
 
 \section{Results in Concrete Cases}
 
-\subsection{The Free Time-Independent One-Dimensional Periodic Schrödinger Equation}
+\subsection{The Free One-Dimensional Time-Independent Schrödinger Equation with Periodic Boundary Conditions}
 
-As our first case, we study the discretization of the time-independent one-dimensional free Schrödinger equation with periodic boundary conditions.
+Let us begin by considering the time-independent Schrödinger equation for a free particle on the real line:
 
-The finite difference method for the boundary-value problem,
 \begin{equation*}
-    H \psi(x) = -\frac{1}{2}\frac{\diff^2}{\diffx^2}\psi(x) = E \psi(x), \quad \text{for} \; 0 \leq x \leq L, \quad \text{with} \; \psi(0) = \psi(L)
+    -\frac{1}{2}\frac{\diff^2}{\diffx^2}\psi(x) = E \psi(x), \quad \text{for} \; x \in \mathbb{R}
 \end{equation*}
 
-requires that we select an integer $N > 0$ and divide the interval $[0, L]$ into $(N - 1)$ equal subintervals whose endpoints are the mesh points $x_i = i \Delta x$, for $i = 0, 1, 2, \dots, N - 1$, where $\Delta x = L / (N - 1)$. Using a centered-difference formula for $\psi''(x_i)$ together with the boundary conditions, we get the system of equations
+Discretizing this equation yields the operator $H_{\text{discrete}} \in \mathcal{L} (\ell^2(\mathbb{Z}))$, which cannot be represented as a finite matrix and whose spectrum is continuous. Because of this, we cannot work with it as it stands.
+
+To make the problem numerically tractable, we restrict the equation to the finite interval $[0, L]$ and impose periodic boundary conditions:
+
+\begin{equation*}
+    H_0 \psi(x) = -\frac{1}{2}\frac{\diff^2}{\diffx^2}\psi(x) = E \psi(x), \quad \text{for} \; 0 \leq x \leq L, \quad \text{with} \; \psi(0) = \psi(L)
+\end{equation*}
+
+The finite difference method for this boundary-value problem, requires that we select an integer $N > 0$ and divide the interval $[0, L]$ into $(N - 1)$ equal subintervals whose endpoints are the mesh points $x_i = i \Delta x$, for $i = 0, 1, 2, \dots, N - 1$, where $\Delta x = L / (N - 1)$. Using a centered-difference formula for $\psi''(x_i)$ together with the boundary conditions, we get the system of equations
 
 \begin{align*}
     -\frac{1}{2} \frac{1}{(\Delta x)^2} \left( \psi_{i+1} - 2\psi_i + \psi_{i-1} \right) &= E \psi_i, \quad \text{for} \; i = 1, 2, \dots, N - 2; \\
     \text{and} \; \psi_0 &= \psi_{N-1}.
 \end{align*}
 
-This allows us to express the Hamiltonian, $H_{\text{Discrete}} \in \mathcal{L} (\ell^2(\mathbb{Z}))$, in matrix form as 
+This allows us to express the Hamiltonian in matrix form as 
 
 \begin{equation*}
     H_N = \begin{pmatrix}
@@ -344,21 +350,21 @@ This allows us to express the Hamiltonian, $H_{\text{Discrete}} \in \mathcal{L} 
     \end{pmatrix}
 \end{equation*}
 
-for $\Delta x = 1$.
+for $\Delta x = 1$. We can visualize its spectrum through a kernel density estimation (KDE) plot\footnotemark, as shown in figure \ref{fig:free_hamiltonian}.
 
-We can then plot its spectrum using a kernel density estimation (KDE). The resulting plot is shown in figure \ref{fig:free_hamiltonian}.
+\footnotetext{This type of visualization is obtained by smoothing out the observations in a dataset with a Gaussian kernel, thus generating a continuous density estimate. It has the advantage of producing a less cluttered and more easily interpretable plot compared to histograms. However, it can introduce distortions when the underlying distribution is bounded (this is known as the Boundary Bias). A solution for this problem consists in reflecting the data across the boundaries, calculating the KDE, and then ignoring the reflected part.}
 
 \begin{figure}[h]
    \centering
    \includegraphics[scale=0.8]{kde_nonperturbed_L=1000.png}
-   \caption{KDE plot of the spectrum of the free Hamiltonian, with $L = 1000$ and $\Delta x = 1$.}
+   \caption{Kernel density estimation (KDE) plot of the spectrum of the free Hamiltonian, with $L = 1000$ and $\Delta x = 1$.}
    \label{fig:free_hamiltonian}
 \end{figure}
 
-Now, in order to validate the pseudospectral inclusion bound for this operator, first we need to take an uneven section. In fact, given the simplicity of $H_{\text{free}}$, we can center it at any point. For instance, let $r \in \{ 50, 100, 150 \}$, $\lambda \in \mathbb{R}$, and $x = 500$, then an uneven section looks like so
+Now, in order to validate the pseudospectral inclusion bound for this operator, first we need to take an uneven section. In fact, given the simplicity of $H_N$, we can center it at any point. For instance, let $r \in \{ 50, 100, 150, 200, 250 \}$, $\lambda \in \mathbb{R}$, and $x = 500$, then an uneven section looks like so
 
 \[
-    (H_{\text{free}} - \lambda) = \begin{pmatrix}
+    (H_N - \lambda I) = \begin{pmatrix}
         1 - \lambda & -\frac{1}{2} & & & & \cdots & & & & & & -\frac{1}{2} \\
         -\frac{1}{2} & 1 - \lambda & & & & & & & & & & \\
         & & \ddots & & & & & & & & & \\
@@ -385,34 +391,42 @@ And, for different $\lambda$ values, we get the following results:
 
 \begingroup
 \begin{center}
-    \begin{tabular}{ |c||c|c| }
+    \begin{tabular}{ |c||c|c|c| }
         \hline
-        \multicolumn{3}{|c|}{Pseudospectral Inclusion Bound (PIB)} \\
+        \multicolumn{4}{|c|}{Bounds on $\rho_H(\lambda)$} \\
         \hline
-        $\left( r, \lambda \right)$ & $d\left(\lambda, \sigma(H)\right)$ & $\varepsilon_{r, \lambda, 500}$ \\
+        $\left( r, \lambda \right)$ & $d\left(\lambda, \sigma(H)\right)$ & Upper bound & Lower bound \\
         \hline
-        $(50, -0.1)$ & 0.100000 & 0.100507 \\
-        $(100, -0.1)$ & 0.100000 & 0.100125 \\
-        $(150, -0.1)$ & 0.100000 & 0.100055 \\
+        $(50, -0.1)$ & 0.100000 & 0.100507 & -0.031493 \\
+        $(100, -0.1)$ & 0.100000 & 0.100125 & 0.034125 \\
+        $(150, -0.1)$ & 0.100000 & 0.100055 & 0.056055 \\
+        $(200, -0.1)$ & 0.100000 & 0.100031 & 0.067031 \\
+        $(250, -0.1)$ & 0.100000 & 0.100020 & 0.073620 \\
         \hline
-        $(50, 0.5)$ & 0.000906 & 0.026657 \\
-        $(100, 0.5)$ & 0.000906 & 0.013402 \\
-        $(150, 0.5)$ & 0.000906 & 0.008979 \\
+        $(50, 0.5)$ & 0.000906 & 0.026657 & -0.033343 \\
+        $(100, 0.5)$ & 0.000906 & 0.013402 & -0.016598 \\
+        $(150, 0.5)$ & 0.000906 & 0.008979 & -0.011021 \\
+        $(200, 0.5)$ & 0.000906 & 0.006768 & -0.008232 \\
+        $(250, 0.5)$ & 0.000906 & 0.005409 & -0.006591 \\
         \hline
-        $(50, 1.2)$ & 0.002025 & 0.029876 \\
-        $(100, 1.2)$ & 0.002025 & 0.015225 \\
-        $(150, 1.2)$ & 0.002025 & 0.010161 \\
+        $(50, 1.2)$ & 0.002025 & 0.029876 & -0.030124 \\
+        $(100, 1.2)$ & 0.002025 & 0.015225 & -0.014775 \\
+        $(150, 1.2)$ & 0.002025 & 0.010161 & -0.009839 \\
+        $(200, 1.2)$ & 0.002025 & 0.007644 & -0.007356 \\
+        $(250, 1.2)$ & 0.002025 & 0.006125 & -0.005875 \\
         \hline
-        $(50, 2.3)$ & 0.300005 & 0.300494 \\
-        $(100, 2.3)$ & 0.300005 & 0.300123 \\
-        $(150, 2.3)$ & 0.300005 & 0.300055 \\
+        $(50, 2.3)$ & 0.300005 & 0.300494 & 0.144494 \\
+        $(100, 2.3)$ & 0.300005 & 0.300123 & 0.222123 \\
+        $(150, 2.3)$ & 0.300005 & 0.300055 & 0.248055 \\
+        $(200, 2.3)$ & 0.300005 & 0.300031 & 0.261031 \\
+        $(250, 2.3)$ & 0.300005 & 0.300020 & 0.268820 \\
         \hline
     \end{tabular}
 \end{center}
 \endgroup
 
 \vspace{0.5cm}
-These data clearly show that the PIB is valid in the present case. Moreover, from them we can see that increasing the window size ($r$) of the uneven section lowers the bound. The reason for this is that a larger window will contain more of the support of the eigenvector of $H_{\text{free}}$ corresponding to the eigenvalue closest to our chosen $\lambda$, and so, the SVD can produce a better approximation to both the eigenvector and the eigenvalue. Another interesting conclusion we can draw from them is that choosing a $\lambda$ outside of the range of the spectrum yields a smaller bound because the eigenvectors with eigenvalues at the boundary are more localized.
+These data clearly show that the PIB is valid in the present case. Moreover, from them we can see that increasing the window size ($r$) of the uneven section lowers the bound. The reason for this is that a larger window will contain more of the support of the eigenvector of $H_N$ corresponding to the eigenvalue closest to our chosen $\lambda$, and so, the SVD can produce a better approximation to both the eigenvector and the eigenvalue. Another interesting conclusion we can draw from them is that choosing a $\lambda$ outside of the range of the spectrum yields a smaller bound because the eigenvectors with eigenvalues at the boundary are more localized.
 
 \newpage
 

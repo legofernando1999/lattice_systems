@@ -14,10 +14,10 @@
 \contentsline {subsection}{\numberline {2.2}The Spectral and Pseudospectral Problems}{4}{subsection.2.2}%
 \contentsline {subsubsection}{\numberline {2.2.1}Normal Operators}{4}{subsubsection.2.2.1}%
 \contentsline {subsubsection}{\numberline {2.2.2}The Pseudospectrum}{4}{subsubsection.2.2.2}%
-\contentsline {subsection}{\numberline {2.3}Approximating Spectra and Pseudospectra with Full Error Control}{6}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.3}Approximating Spectra and Pseudospectra with Full Error Control}{5}{subsection.2.3}%
 \contentsline {subsubsection}{\numberline {2.3.1}The Pseudospectral Inclusion Bound (PIB)}{6}{subsubsection.2.3.1}%
 \contentsline {subsubsection}{\numberline {2.3.2}The Spectral Gap Bound}{6}{subsubsection.2.3.2}%
 \contentsline {subsubsection}{\numberline {2.3.3}A General Algorithm}{7}{subsubsection.2.3.3}%
 \contentsline {section}{\numberline {3}Results in Concrete Cases}{8}{section.3}%
-\contentsline {subsection}{\numberline {3.1}The Free Time-Independent One-Dimensional Periodic Schrödinger Equation}{8}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.1}The Free One-Dimensional Time-Independent Schrödinger Equation with Periodic Boundary Conditions}{8}{subsection.3.1}%
 \contentsline {section}{\numberline {4}Conclusion and Future Work}{11}{section.4}%
