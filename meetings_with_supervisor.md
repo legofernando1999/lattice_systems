@@ -2,14 +2,14 @@
 
 ## 07/06/2026
 + He gave me feedback about my scientific project. The most important comments are:
-  - Make the introduction less broad and tailor it to your particular case. For example, you do not need to mention Abel's theorem. How I understood this: Make the intro less generic.
-  - Add a small introduction in the Theoretical Framework chapter to motivate the introduction of all the abstract objects being defined. You can even add explanations to each definition where you explain how it is going to be applied later on. For example, in our particular case the uniformly discrete set is just going to be the set of integers.
-  - Do not present the singular value decomposition as a remark, but rather give the theorem that proves that this decomposition always exists.
-  - Start by talking about the "infinite-volume" Schrödinger equation, and then restrict the domain to the interval `[0, L]` with boundary conditions. Of course explain why we do this (discrete spectrum).
-  - Mention that since we have periodic boundary conditions, our epsilon does not depend on x, that is, it is the infimum with respect to x.
-  - Explain what a kernel density estimation is. Maybe as a footnote since it is mentioned only once.
-  - Add a column for the spectral gap bound and allow r to go up to 250.
-  - Expand on the final conclusions.
+  - [ ] Make the introduction less broad and tailor it to your particular case. For example, you do not need to mention Abel's theorem. How I understood this: Make the intro less generic.
+  - [ ] Add a small introduction in the Theoretical Framework chapter to motivate the introduction of all the abstract objects being defined. You can even add explanations to each definition where you explain how it is going to be applied later on. For example, in our particular case the uniformly discrete set is just going to be the set of integers.
+  - [x] Do not present the singular value decomposition as a remark, but rather give the theorem that proves that this decomposition always exists.
+  - [ ] Start by talking about the "infinite-volume" Schrödinger equation, and then restrict the domain to the interval `[0, L]` with boundary conditions. Of course explain why we do this (discrete spectrum).
+  - [ ] Mention that since we have periodic boundary conditions, our epsilon does not depend on x, that is, it is the infimum with respect to x.
+  - [x] Explain what a kernel density estimation is. Maybe as a footnote since it is mentioned only once.
+  - [x] Add a column for the spectral gap bound and allow r to go up to 250.
+  - [ ] Expand on the final conclusions.
 + Regarding the perturbation of the free Hamiltonian: You should only perturb the main diagonal of the matrix, as this represents the addition of a random potential.
 
 ## 06/17/2026

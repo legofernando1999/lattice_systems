@@ -23,7 +23,7 @@
 \usepackage{multirow}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
-% Highlight parts of matrices
+% Highlight parts of matrices   `'
 \usepackage{tikz}
 \usetikzlibrary{fit}
 \tikzset{
@@ -118,6 +118,10 @@ The broad aim of this work is to validate and contribute to the understanding of
 
 \section{Theoretical Framework}
 
+\subsection{Introduction}
+
+In this chapter, we shall present the general framework developed in \cite{paulhege2025} for approximating the (pseudo)spectra of linear operators with full error control, and explain how each mathematical object is employed in our specific case.
+
 \subsection{Basic Definitions}
 
 \subsubsection{Metric and open balls on $\mathbb{R}^n$}
@@ -132,9 +136,13 @@ for all $x, y \in \mathbb{R}^n$.
 
 We also define the set $B_r (x)$ for $r > 0$ and $x \in \mathbb{R}^n$ as the open ball using this distance, i.e. as the hypercube of side length $2r$ centered at $x$.
 
+\textbf{Remark.} For us, this translates to $d(x, y) = \vert x - y \vert$ and $B_r (x) = (x - r, x + r)$ for every $x, y \in \mathbb{R}$ and $r > 0$.
+
 \subsubsection{Uniformly Discrete Set}
 
 \textbf{Definition.} A subset $\Gamma \subseteq \mathbb{R}^n$ is called \textit{uniformly discrete} if there exists a constant $q > 0$, the \textit{packing radius}, such that $d(x, y) \ge q$ for all $x, y \in \Gamma$ with $x \ne y$.
+
+\textbf{Remark.} We shall take the set of integers, $\mathbb{Z}$, as our uniformly discrete set ($q = 1$).
 
 \subsubsection{Discrete Operator and Matrix Elements}
 
@@ -298,7 +306,7 @@ In practice, the importance of this theorem lies in the fact that for FLC operat
 
 \subsubsection{A General Algorithm}
 
-Finally, combining bounds \ref{eq:upper_bound} and \ref{eq:lower_bound} leads to a general algorithm for computing an approximation to the (pseudo-)spectrum for FLC operators with full error control. That is, given any short-range, discrete, normal, FLC operator $H$ and $k \in \mathbb{N}$, one can derive an algorithm which computes an approximation $\Gamma_k(H) \subseteq \mathbb{C}$ such that
+Finally, combining bounds \ref{eq:upper_bound} and \ref{eq:lower_bound} leads to a general algorithm for computing an approximation to the (pseudo)spectrum for FLC operators with full error control. That is, given any short-range, discrete, normal, FLC operator $H$ and $k \in \mathbb{N}$, one can derive an algorithm which computes an approximation $\Gamma_k(H) \subseteq \mathbb{C}$ such that
 \begin{equation}
     d_{\text{Hausdorff}} \left( \sigma(H), \Gamma_k(H) \right) \leq 2^{-k}
 \end{equation}
