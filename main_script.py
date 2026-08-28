@@ -492,7 +492,7 @@ def lower_norm_fct_bounds():
     dx = 1.0  # step size
     perturb_H = False
     r_range = range(50, 300, 50)  # uneven section window size
-    lmbd_range = (-0.1, 0.5, 1.2, 2.3)  # λ
+    lmbd_range = (-0.1, 0.5, 1.2, 1.7, 2.3)  # λ
     x = 501
     m = 1  # maximal hopping length
 

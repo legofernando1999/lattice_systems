@@ -40,7 +40,7 @@
 }
 
 % Set maximum number of columns in matrices
-\setcounter{MaxMatrixCols}{12}
+\setcounter{MaxMatrixCols}{13}
 
 % Make quotes
 \usepackage{csquotes}
@@ -69,7 +69,7 @@
 
     \begin{center}
         \mbox{}\vfill
-        \Large
+        \LARGE
         \textbf{Scientific Project} 
 	
         \vspace{1 cm}
@@ -102,17 +102,17 @@
 
 \subsection{Research Motivation}
 
-Spectral analysis has proven to be a powerful tool for solving a wide range of problems in mathematics, physics and engineering. Among its many applications, it facilitates the decoupling of problems involving vectors or functions into collections of simpler problems involving only scalars, the analysis of the phenomenon of resonance, and the characterization of the asymptotic behavior of a system \cite{pseudospectra}. Therefore, the ability to compute the spectra of linear operators is of fundamental importance.
+Spectral analysis has proven to be a powerful tool for solving a wide range of problems in mathematics, physics, and engineering. Among its many applications, it facilitates the decoupling of problems involving vectors or functions into collections of simpler problems involving only scalars, the analysis of the phenomenon of resonance, and the characterization of the asymptotic behavior of a system \cite{pseudospectra}. Therefore, the ability to compute the spectra of linear operators is of fundamental importance.
 
-In practice, however, analytical solutions are rarely available. Even in the case of finite-dimensional operators represented by $n \times n$ matrices, the theorem of Abel and Ruffini shows that no general formula, involving only rational operations and root extractions, can exist for solving algebraic equations of degree higher than fourth \cite{theoryofeqs}. As a result, there is no general closed-form expression for the eigenvalues of arbitrary matrices, making numerical methods necessary.
+In practice, however, analytical solutions are rarely available. Even in the case of finite-dimensional operators represented by $n \times n$ matrices, there is no general closed-form expression for their eigenvalues, making numerical methods necessary.
 
-The situation becomes even more challenging when considering infinite-volume operators or those acting on infinite-dimensional spaces. Nevertheless, their ubiquity in applications has driven the development of multiple numerical algorithms designed to approximate the spectra for different classes of operators.
+Motivated by these challenges, the authors of \cite{paulhege2025} address the problem of computing the spectra for \textit{short-range, finite-local-complexity, infinite-volume operators}. Prior to their work, no numerical method was capable of approximating the spectra for this specific class of operators with full error control. By overcoming this limitation, their work fills an important gap in the existing literature.
 
-Motivated by these challenges, the authors of \cite{paulhege2025} address the problem of computing the spectra for \textit{short-range finite-local-complexity infinite-volume operators}. Prior to their work, no numerical method was capable of approximating the spectra for this specific class of operators with full error control. By overcoming this limitation, their work fills an important gap in the existing literature.
+\subsection{Objectives}
 
-\subsection{Problem Statement}
+The broad aim of this study is to validate and contribute to the understanding of some of the results reported in \cite{paulhege2025}. As our case study, we have chosen the free one-dimensional time-independent Schrödinger equation with periodic boundary conditions, which, despite its apparent simplicity, shares many of the key features found in more complex operators.
 
-The broad aim of this work is to validate and contribute to the understanding of some of the results reported in \cite{paulhege2025} in concrete situations. To this end, simulation tools which take advantage of extensively-tested scientific libraries such as NumPy and SciPy were developed in Python. This allowed us to fully focus on the mathematical aspects of the problem, and on the interpretation of the results, without having to worry about the technical details of the implementation.
+To this end, simulation tools that take advantage of extensively-tested scientific libraries such as NumPy and SciPy were developed in Python. This allowed us to fully focus on the mathematical aspects of the problem and the interpretation of the results, without having to worry about the technical details of the implementation.
 
 \newpage
 
@@ -120,7 +120,7 @@ The broad aim of this work is to validate and contribute to the understanding of
 
 \subsection{Introduction}
 
-In this chapter, we shall present the general framework developed in \cite{paulhege2025} for approximating the (pseudo)spectra of linear operators with full error control, and explain how each mathematical object is employed in our specific case.
+In this chapter, we shall present the general framework developed in \cite{paulhege2025} for approximating the (pseudo)spectra of linear operators with full error control, and explain how some of those mathematical objects will be employed in our specific case.
 
 \subsection{Basic Definitions}
 
@@ -169,6 +169,8 @@ For any $x \in \mathbb{R}^n$ and $r > 0$, the finite-dimensional subspace $\math
 for all $x, y \in \Gamma$.
 
 \textbf{Definition.} A discrete operator $H$ is said to have \textit{finite range} if there exists a constant $m > 0$ (the maximal hopping length) such that $H_{xy} = 0$ whenever $d(x, y) > m$.
+
+\textbf{Remark.} We shall work with a discrete operator with finite range (with maximal hopping length, $m = 1$).
 
 \subsubsection{Equivalent Action and Finite Local Complexity}
 
@@ -279,7 +281,7 @@ Since $\mathcal{H}_{B_r(x)}$ and $\mathcal{H}_{B_{r + m}(x)}$ are finite dimensi
 
 A proof can be found in \cite{paulhege2025}.
 
-\subsubsection{The Spectral Gap Bound}
+\subsubsection{The Spectral Gap Bound (SGB)}
 
 In previous work \cite{computespectra}, it was shown that the pseudospectral inclusion bound $\varepsilon_{r, \lambda, x}$ always converges to $\rho_H (\lambda)$ as $r \rightarrow \infty$, at least for normal, finite-range operators. Nonetheless, since the convergence is not uniform in the operator $H$, it cannot be used to compute a lower bound on $\rho_H (\lambda)$.
 
@@ -320,7 +322,7 @@ For a proof of either of these results, see \cite{paulhege2025}.
 
 \newpage
 
-\section{Results in Concrete Cases}
+\section{Results}
 
 \subsection{The Free One-Dimensional Time-Independent Schrödinger Equation with Periodic Boundary Conditions}
 
@@ -338,7 +340,7 @@ To make the problem numerically tractable, we restrict the equation to the finit
     H_0 \psi(x) = -\frac{1}{2}\frac{\diff^2}{\diffx^2}\psi(x) = E \psi(x), \quad \text{for} \; 0 \leq x \leq L, \quad \text{with} \; \psi(0) = \psi(L)
 \end{equation*}
 
-The finite difference method for this boundary-value problem, requires that we select an integer $N > 0$ and divide the interval $[0, L]$ into $(N - 1)$ equal subintervals whose endpoints are the mesh points $x_i = i \Delta x$, for $i = 0, 1, 2, \dots, N - 1$, where $\Delta x = L / (N - 1)$. Using a centered-difference formula for $\psi''(x_i)$ together with the boundary conditions, we get the system of equations
+Then the finite difference method for this boundary-value problem, requires that we select an integer $N > 0$ and divide the interval $[0, L]$ into $(N - 1)$ equal subintervals whose endpoints are the mesh points $x_i = i \Delta x$, for $i = 0, 1, 2, \dots, N - 1$, where $\Delta x = L / (N - 1)$. Using a centered-difference formula for $\psi''(x_i)$ together with the boundary conditions, we get the system of equations
 
 \begin{align*}
     -\frac{1}{2} \frac{1}{(\Delta x)^2} \left( \psi_{i+1} - 2\psi_i + \psi_{i-1} \right) &= E \psi_i, \quad \text{for} \; i = 1, 2, \dots, N - 2; \\
@@ -358,32 +360,35 @@ This allows us to express the Hamiltonian in matrix form as
     \end{pmatrix}
 \end{equation*}
 
-for $\Delta x = 1$. We can visualize its spectrum through a kernel density estimation (KDE) plot\footnotemark, as shown in figure \ref{fig:free_hamiltonian}.
+for $\Delta x = 1$. 
+
+$H_N$ has a discrete spectrum which we can visualize through a kernel density estimation (KDE) plot\footnotemark, as shown in figure \ref{fig:free_hamiltonian}.
 
 \footnotetext{This type of visualization is obtained by smoothing out the observations in a dataset with a Gaussian kernel, thus generating a continuous density estimate. It has the advantage of producing a less cluttered and more easily interpretable plot compared to histograms. However, it can introduce distortions when the underlying distribution is bounded (this is known as the Boundary Bias). A solution for this problem consists in reflecting the data across the boundaries, calculating the KDE, and then ignoring the reflected part.}
 
 \begin{figure}[h]
    \centering
-   \includegraphics[scale=0.8]{kde_nonperturbed_L=1000.png}
+   \includegraphics[scale=0.9]{kde_nonperturbed_L=1000.png}
    \caption{Kernel density estimation (KDE) plot of the spectrum of the free Hamiltonian, with $L = 1000$ and $\Delta x = 1$.}
    \label{fig:free_hamiltonian}
 \end{figure}
 
-Now, in order to validate the pseudospectral inclusion bound for this operator, first we need to take an uneven section. In fact, given the simplicity of $H_N$, we can center it at any point. For instance, let $r \in \{ 50, 100, 150, 200, 250 \}$, $\lambda \in \mathbb{R}$, and $x = 500$, then an uneven section looks like so
+Now, in order to validate the PIB and the SGB for this operator, first we need to take an uneven section. In fact, given the simplicity of $H_N$ and the periodic boundary conditions, we can choose any combination of $r, \lambda$ and $x$, and the singular value $\varepsilon_{r, \lambda, x}$ will still be independent of $x$, that is, it will be equal to the infimum $\varepsilon_{r, \lambda}$. For instance, let $r \in \{ 50, 100, 150, 200, 250 \}$, $\lambda \in \{ -0.1, 0.5, 1.2, 1.7, 2.3 \}$, and $x = 500$, then an uneven section will look like so
 
 \[
     (H_N - \lambda I) = \begin{pmatrix}
-        1 - \lambda & -\frac{1}{2} & & & & \cdots & & & & & & -\frac{1}{2} \\
-        -\frac{1}{2} & 1 - \lambda & & & & & & & & & & \\
-        & & \ddots & & & & & & & & & \\
-        & & & 1 - \lambda & \tikzmark{left}{$-\frac{1}{2}$} & & & & & & & \\
-        & & & -\frac{1}{2} & 1 - \lambda & -\frac{1}{2} & & & & & & \\
-        \vdots & & & & -\frac{1}{2} & 1 - \lambda & -\frac{1}{2} & & & & & \vdots \\
-        & & & & & \ddots & \ddots & \ddots & & & & \\
-        & & & & & & -\frac{1}{2} & 1 - \lambda & -\frac{1}{2} & & & \\
-        & & & & & & & \tikzmark{right}{$-\frac{1}{2}$} & 1 - \lambda & & & \\
-        & & & & & & & & & & \ddots & \\
-        -\frac{1}{2} & & & & & \cdots & & & & & -\frac{1}{2} & 1 - \lambda
+        1 - \lambda & -\frac{1}{2} & & & & \cdots & & & & & & & -\frac{1}{2} \\
+        -\frac{1}{2} & 1 - \lambda & & & & & & & & & & & \\
+        & & \ddots & & & & & & & & & & \\
+        & & & 1 - \lambda & \tikzmark{left}{$-\frac{1}{2}$} & & & & & & & & \\
+        & & & -\frac{1}{2} & 1 - \lambda & -\frac{1}{2} & & & & & & & \\
+        \vdots & & & & -\frac{1}{2} & 1 - \lambda & -\frac{1}{2} & & & & & & \vdots \\
+        & & & & & \ddots & \ddots & \ddots & & & & & \\
+        & & & & & & -\frac{1}{2} & 1 - \lambda & -\frac{1}{2} & & & & \\
+        & & & & & & & \tikzmark{right}{$-\frac{1}{2}$} & 1 - \lambda & & & & \\
+        & & & & & & & & & & \ddots & & \\
+        & & & & & & & & & & & 1 - \lambda & -\frac{1}{2} \\
+        -\frac{1}{2} & & & & & \cdots & & & & & & -\frac{1}{2} & 1 - \lambda
     \end{pmatrix}
     \Highlight[uneven_section]
     \tikz[overlay,remember picture] {
@@ -391,7 +396,7 @@ Now, in order to validate the pseudospectral inclusion bound for this operator, 
     }
 \]
 
-And, for different $\lambda$ values, we get the following results:
+And we get the following results:
 \vspace{0.5cm}
 
 \setlength{\tabcolsep}{8pt} % Default value: 6pt
@@ -401,9 +406,9 @@ And, for different $\lambda$ values, we get the following results:
 \begin{center}
     \begin{tabular}{ |c||c|c|c| }
         \hline
-        \multicolumn{4}{|c|}{Bounds on $\rho_H(\lambda)$} \\
+        \multicolumn{4}{|c|}{Upper and Lower Bounds on $\rho_H(\lambda)$} \\
         \hline
-        $\left( r, \lambda \right)$ & $d\left(\lambda, \sigma(H)\right)$ & Upper bound & Lower bound \\
+        $\left( r, \lambda \right)$ & $d\left(\lambda, \sigma(H)\right)$ & PIB (Upper bound) & SGB (Lower bound) \\
         \hline
         $(50, -0.1)$ & 0.100000 & 0.100507 & -0.031493 \\
         $(100, -0.1)$ & 0.100000 & 0.100125 & 0.034125 \\
@@ -423,6 +428,12 @@ And, for different $\lambda$ values, we get the following results:
         $(200, 1.2)$ & 0.002025 & 0.007644 & -0.007356 \\
         $(250, 1.2)$ & 0.002025 & 0.006125 & -0.005875 \\
         \hline
+        $(50, 1.7)$ & 0.000978 & 0.021814 & -0.062186 \\
+        $(100, 1.7)$ & 0.000978 & 0.011073 & -0.030927 \\
+        $(150, 1.7)$ & 0.000978 & 0.007394 & -0.020606 \\
+        $(200, 1.7)$ & 0.000978 & 0.005568 & -0.015432 \\
+        $(250, 1.7)$ & 0.000978 & 0.004465 & -0.012335 \\
+        \hline
         $(50, 2.3)$ & 0.300005 & 0.300494 & 0.144494 \\
         $(100, 2.3)$ & 0.300005 & 0.300123 & 0.222123 \\
         $(150, 2.3)$ & 0.300005 & 0.300055 & 0.248055 \\
@@ -434,15 +445,17 @@ And, for different $\lambda$ values, we get the following results:
 \endgroup
 
 \vspace{0.5cm}
-These data clearly show that the PIB is valid in the present case. Moreover, from them we can see that increasing the window size ($r$) of the uneven section lowers the bound. The reason for this is that a larger window will contain more of the support of the eigenvector of $H_N$ corresponding to the eigenvalue closest to our chosen $\lambda$, and so, the SVD can produce a better approximation to both the eigenvector and the eigenvalue. Another interesting conclusion we can draw from them is that choosing a $\lambda$ outside of the range of the spectrum yields a smaller bound because the eigenvectors with eigenvalues at the boundary are more localized.
+These data show that both the PIB and the SGB are valid bounds in the present case. Moreover, as the window size ($r$) increases, the PIB decreases and the SGB increases. The reason for this is that a larger window captures more of the support of the eigenvector of $H_N$ corresponding to the eigenvalue closest to our chosen $\lambda$, and thus, the SVD can produce a better approximation to both the eigenvector and the eigenvalue. Another interesting pattern we can observe in the data is that values of $\lambda$ outside the spectrum range yield a PIB closer to $d\left(\lambda, \sigma(H)\right)$, likely due to the higher localization of edge states.
 
 \newpage
 
 \section{Conclusion and Future Work}
 
-A lower bound on $\rho_H$ and a general algorithm for approximating the pseudospectra of infinite-volume operators with FLC were proposed in \cite{paulhege2025}, and here we tested the pseudospectral inclusion bound against the free Hamiltonian with positive results.
+In this work we checked the validity of the pseudospectral inclusion bound and the spectral gap bound against the Hamiltonian describing the behavior of a free particle in one dimension. Additionally, we ran a sensitivity test on two of the variables of an uneven section, namely, $r$ and $\lambda$, which then enabled us to understand their effect on the calculation of the bounds.
 
-Future work should focus on validating the PIB and the spectral gap bound against different Hamiltonians, e.g., random Hamiltonians, Hamiltonians emerging from quasicrystal systems, etc. Additionally, combining the computational tools developed for this work with the bounds on the lower norm function should enable us to prove spectral gaps of infinite-volume one-body operators.
+Furthermore, we developed a computer program capable of computing the PIB and the SGB for any Hamiltonian represented by a finite matrix, thus making it possible for us to study a great variety of quantum systems.
+
+Future work should focus on validating the bounds against different Hamiltonians, e.g., random Hamiltonians, Hamiltonians emerging from quasicrystal systems, etc., and developing software capable of proving spectral gaps of infinite-volume one-body operators.
 
 \newpage
 
