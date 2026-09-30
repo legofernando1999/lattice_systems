@@ -1,5 +1,9 @@
 # Meetings with Stefan Teufel
 
+## 09/30/2026
++ The purpose of the meeting was to discuss possible paths for extending the Scientific Project into a Master's Thesis. However, Stefan mentioned he didn't have time to prepare. For the next meeting, I need to come up with ideas and research questions.
++ He gave me access to a Claude license from their research group. I'll test it out.
+
 ## 07/06/2026
 + He gave me feedback about my scientific project. The most important comments are:
   - [x] Make the introduction less broad and tailor it to your particular case. For example, you do not need to mention Abel's theorem. How I understood this: Make the intro less generic.
