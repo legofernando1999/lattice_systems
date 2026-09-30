@@ -351,7 +351,7 @@ def generate_plot(L, H_perturbed, H_eigenvalues, H_sections, plots_subfolder) ->
         Name of directory where plot will be saved.
     '''
     FIG_DIR = PLOTS_DIR / plots_subfolder
-    FIG_DIR.mkdir(exist_ok=True)
+    FIG_DIR.mkdir(parents=True, exist_ok=True)
 
     if H_perturbed:
         eigenvalues_plot_title = 'Eigenvalues perturbed Hamiltonian'
@@ -374,10 +374,14 @@ def free_hamiltonian():
     L = 1000  # space length
     dx = 1.0  # step size
     perturb_H = True
+    seed = None  # Seed for the perturbation. If None, a fresh seed is drawn and printed
     plots_subfolder = 'free_Hamiltonian'
 
-    hamiltonian = Hamiltonian.construct_free_hamiltonian(L=L, dx=dx, perturb_H=perturb_H, random_rng=(-0.1, 0.1), eigvals_only=True)
+    hamiltonian = Hamiltonian.construct_free_hamiltonian(L=L, dx=dx, perturb_H=perturb_H, random_rng=(-0.1, 0.1), eigvals_only=True, seed=seed)
     H = hamiltonian.matrix
+
+    if perturb_H:
+        print(f'Perturbation seed: {hamiltonian.seed}')
 
     r = 50
     m = 1  # maximal hopping length
@@ -400,6 +404,7 @@ def free_hamiltonian_lambda():
     L = 1000  # space length
     dx = 1.0  # step size
     perturb_H = False
+    seed = None  # Seed for the perturbation. If None, a fresh seed is drawn and printed
     lmbd = -0.5  # λ
     r = 150  # uneven section window size
     m = 1  # maximal hopping length
@@ -409,7 +414,10 @@ def free_hamiltonian_lambda():
     hamiltonian_filename = 'hamiltonian_3.json'
 
     # Construct new Hamiltonian
-    hamiltonian = Hamiltonian.construct_free_hamiltonian(L=L, dx=dx, perturb_H=perturb_H, random_rng=(-0.2, 0.2))
+    hamiltonian = Hamiltonian.construct_free_hamiltonian(L=L, dx=dx, perturb_H=perturb_H, random_rng=(-0.2, 0.2), seed=seed)
+
+    if perturb_H:
+        print(f'Perturbation seed: {hamiltonian.seed}')
 
     # Retrieve Hamiltonian from JSON file
     # from_json_path = HAMILTONIANS_DIR / 'hamiltonian_1.json'
@@ -450,6 +458,7 @@ def free_hamiltonian_lambda():
 
     # Convert Hamiltonian to JSON file.
     if save_hamiltonian:
+        HAMILTONIANS_DIR.mkdir(exist_ok=True)
         to_json_path = HAMILTONIANS_DIR / hamiltonian_filename
         hamiltonian.to_json(to_json_path)
 
